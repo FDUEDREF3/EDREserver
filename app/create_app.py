@@ -1,15 +1,23 @@
 from flask import Flask  # 从flask包里面导入Flask核心类
 from app.api.views import api
+from app.config.settings import DBConfig
+from Flask-SQLAlchemy import SQLAlchemy
 
 app = Flask(__name__)  # 实例化flask核心对象
 
 def register_blueprint(app):
     app.register_blueprint(api, url_prefix='/api')
 
+def connectDB(dbConfig):
+    app.config[
+        'SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{dbConfig.USERNAME}:{dbConfig.PASSWORD}@{dbConfig.HOSTNAME}:{dbConfig.PORT}/{dbConfig.DATABASE}?charset=utf8mb4"
+
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
     register_blueprint(app)
+    connectDB(DBConfig)
+
     return app
 
 
