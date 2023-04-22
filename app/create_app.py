@@ -3,8 +3,12 @@ from app.api.views import api
 from app.config.settings import DBConfig
 from flask_sqlalchemy import SQLAlchemy
 from app import db
+from flask_sockets import Sockets
+from gevent import pywsgi
+from geventwebsocket.handler import WebSocketHandler
 
 app = Flask(__name__)  # 实例化flask核心对象
+sockets = Sockets(app)
 
 
 def register_blueprint(app):
@@ -22,9 +26,15 @@ def create_app(config):
     app.config[
         'SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{DBConfig.USERNAME}:{DBConfig.PASSWORD}@{DBConfig.HOSTNAME}:{DBConfig.PORT}/{DBConfig.DATABASE}?charset=utf8mb4"
     db.init_app(app)
+    # server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+
     return app
+    # return server
 
 
-if __name__ == '__main__':  # 当python解释器直接运行此文件的时候，里面的代码会执行
-    app.run()
+# if __name__ == '__main__':  # 当python解释器直接运行此文件的时候，里面的代码会执行
+    # app.run()
+    # server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+
+
 
