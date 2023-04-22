@@ -1,5 +1,3 @@
-from flask_sqlalchemy import SQLAlchemy
-
 from app.config.settings import Config
 from app.create_app import create_app
 from app.utils.ZMQBridge import entrypoint
