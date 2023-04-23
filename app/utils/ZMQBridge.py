@@ -9,15 +9,20 @@ import tyro
 import ngrok
 from gevent import pywsgi
 from geventwebsocket.handler import WebSocketHandler
-from app.create_app import app
+from app import app
 
 
 class WebSocketHandler(WebSocketHandler):  # pylint: disable=abstract-method
     """Tornado websocket handler for receiving and sending commands from/to the viewer."""
 
     def __init__(self, *args, **kwargs):
-        self.bridge = kwargs.pop("bridge")
-        super().__init__(*args, **kwargs)
+        # self.bridge = kwargs.pop("bridge")
+        # print(type(args[2]))
+        # print(args[2].get_environ())
+        # print(type(args[2].get_environ()))
+        self.bridge = args[2].get_environ()['bridge']
+        # print(kwargs)
+        super().__init__(*args)
 
     def check_origin(self, origin):
         """This disables CORS."""
@@ -83,10 +88,17 @@ class ZMQWebSocketBridge:
         # zmq
         zmq_url = f"tcp://{ip_address}:{self.zmq_port:d}"
         self.zmq_socket, self.zmq_stream, self.zmq_url = self.setup_zmq(zmq_url)
-
+        # print(websocket_port)
         # websocket
         listen_kwargs = {"address": "0.0.0.0"}
-        self.app.listen(websocket_port, **listen_kwargs)
+        # self.app.listen(websocket_port, **listen_kwargs)
+        # environ_class = {'bridge': self}
+        server = pywsgi.WSGIServer((listen_kwargs["address"], websocket_port), app, handler_class=WebSocketHandler,
+                                   environ={'bridge': self})
+        web_url = str(listen_kwargs["address"]) + ':' + str(websocket_port)
+        print('server start at: ' + web_url)
+        server.serve_forever()
+
         self.websocket_port = websocket_port
         self.websocket_url = f"0.0.0.0:{self.websocket_port}"
 
@@ -201,6 +213,7 @@ def run_viewer_bridge_server(
 
 def entrypoint():
     """The main entrypoint."""
+    # print("test")
     tyro.extras.set_accent_color("bright_yellow")
     tyro.cli(run_viewer_bridge_server)
 

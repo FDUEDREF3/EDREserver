@@ -6,20 +6,17 @@ from app import db
 from flask_sockets import Sockets
 from gevent import pywsgi
 from geventwebsocket.handler import WebSocketHandler
-
-app = Flask(__name__)  # 实例化flask核心对象
-sockets = Sockets(app)
-
-
+from app.utils.ZMQBridge import ZMQWebSocketBridge
+# sockets = Sockets(app)
 def register_blueprint(app):
     app.register_blueprint(api, url_prefix='/api')
 
-def connectDB(dbConfig):
+def connectDB(app, dbConfig):
     app.config[
         'SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{dbConfig.USERNAME}:{dbConfig.PASSWORD}@{dbConfig.HOSTNAME}:{dbConfig.PORT}/{dbConfig.DATABASE}?charset=utf8mb4"
 
-def create_app(config):
-    app = Flask(__name__)
+def create_app(app, config):
+    # app.config['DEBUG'] = True
     app.config.from_object(config)
     register_blueprint(app)
     # connectDB(DBConfig)
@@ -27,7 +24,7 @@ def create_app(config):
         'SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{DBConfig.USERNAME}:{DBConfig.PASSWORD}@{DBConfig.HOSTNAME}:{DBConfig.PORT}/{DBConfig.DATABASE}?charset=utf8mb4"
     db.init_app(app)
     # server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
-
+    app.config['bridge'] = ZMQWebSocketBridge
     return app
     # return server
 
