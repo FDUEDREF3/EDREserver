@@ -6,4 +6,4 @@ class DBConfig():
     PORT = 3306
     USERNAME = "root"
     PASSWORD = "123456"
-    DATABASE = "edreDB"
+    DATABASE = "database_learn"
