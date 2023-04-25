@@ -1,33 +1,44 @@
-import tornado
-import zmq
+# Copyright 2022 The Nerfstudio Team. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Server bridge to facilitate interactions between python backend and javascript front end"""
+
 import sys
-import umsgpack
 from typing import List, Optional, Tuple
-from app.utils.state.node import find_node, get_tree, walk
-from app.utils.state.state_node import StateNode
+
+import tornado.gen
+import tornado.ioloop
+import tornado.web
+import tornado.websocket
+import tyro
+import umsgpack
+import zmq
+import zmq.eventloop.ioloop
+from pyngrok import ngrok
+from tornado.httpserver import HTTPServer
 from zmq.eventloop.zmqstream import ZMQStream
 
-from tornado.wsgi import WSGIContainer
-import tyro
-import ngrok
-from gevent import pywsgi
-from geventwebsocket.handler import WebSocketHandler
-from tornado.httpserver import HTTPServer
-from app import app
+from nerfstudio.viewer.server.state.node import find_node, get_tree, walk
+from nerfstudio.viewer.server.state.state_node import StateNode
 
 
-class WebSocketHandler(WebSocketHandler):  # pylint: disable=abstract-method
+class WebSocketHandler(tornado.websocket.WebSocketHandler):  # pylint: disable=abstract-method
     """Tornado websocket handler for receiving and sending commands from/to the viewer."""
 
     def __init__(self, *args, **kwargs):
-        # self.bridge = kwargs.pop("bridge")
-        # print(type(args[2]))
-        # print(args[2].get_environ())
-        # print(type(args[2].get_environ()))
-        self.bridge = args[2].get_environ()['bridge']
-        print(self.bridge)
-        print(kwargs)
-        super().__init__(*args)
+        self.bridge = kwargs.pop("bridge")
+        super().__init__(*args, **kwargs)
 
     def check_origin(self, origin):
         """This disables CORS."""
@@ -75,6 +86,7 @@ class WebSocketHandler(WebSocketHandler):  # pylint: disable=abstract-method
         self.bridge.websocket_pool.remove(self)
         print("closed:", self, file=sys.stderr)
 
+
 class ZMQWebSocketBridge:
     """ZMQ web socket bridge class
 
@@ -94,23 +106,10 @@ class ZMQWebSocketBridge:
         # zmq
         zmq_url = f"tcp://{ip_address}:{self.zmq_port:d}"
         self.zmq_socket, self.zmq_stream, self.zmq_url = self.setup_zmq(zmq_url)
-        # print(websocket_port)
+
         # websocket
         listen_kwargs = {"address": "0.0.0.0"}
-        # self.app.listen(websocket_port, **listen_kwargs)
-        # environ_class = {'bridge': self}
-
-        # server = pywsgi.WSGIServer((listen_kwargs["address"], websocket_port), app, handler_class=WebSocketHandler,
-        #                            environ={'bridge': self})
-
-        http_server = HTTPServer(WSGIContainer(app, handler_class=WebSocketHandler,
-                                    environ={'bridge': self}))
-        # http_server = HTTPServer(server)
-        http_server.listen(websocket_port)
-        web_url = str(listen_kwargs["address"]) + ':' + str(websocket_port)
-        print('server start at: ' + web_url)
-        # server.serve_forever()
-
+        self.app.listen(websocket_port, **listen_kwargs)
         self.websocket_port = websocket_port
         self.websocket_url = f"0.0.0.0:{self.websocket_port}"
 
@@ -121,12 +120,9 @@ class ZMQWebSocketBridge:
         class_name = self.__class__.__name__
         return f'{class_name} using zmq_port="{self.zmq_port}" and websocket_port="{self.websocket_port}"'
 
-    # def make_app(self):
-    #     """Create a tornado application for the websocket server."""
-    #     return tornado.web.Application([(r"/", WebSocketHandler, {"bridge": self})])
     def make_app(self):
         """Create a tornado application for the websocket server."""
-        return app
+        return tornado.web.Application([(r"/", WebSocketHandler, {"bridge": self})])
 
     def handle_zmq(self, frames: List[bytes]):
         """Switch function that places commands in tree based on websocket command
@@ -217,7 +213,6 @@ def run_viewer_bridge_server(
         # <NgrokTunnel: "http://<public_sub>.ngrok.io" -> "http://localhost:80">
         http_tunnel = ngrok.connect(addr=str(zmq_port), proto="tcp")
         print(http_tunnel)
-    # print("test")
 
     bridge = ZMQWebSocketBridge(zmq_port=zmq_port, websocket_port=websocket_port, ip_address=ip_address)
     print(bridge)
@@ -229,10 +224,9 @@ def run_viewer_bridge_server(
 
 def entrypoint():
     """The main entrypoint."""
-
     tyro.extras.set_accent_color("bright_yellow")
     tyro.cli(run_viewer_bridge_server)
 
 
-# if __name__ == "__main__":
-#     entrypoint()
+if __name__ == "__main__":
+    entrypoint()
