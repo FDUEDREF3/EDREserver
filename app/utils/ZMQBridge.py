@@ -1,3 +1,4 @@
+import tornado
 import zmq
 import sys
 import umsgpack
@@ -5,10 +6,13 @@ from typing import List, Optional, Tuple
 from app.utils.state.node import find_node, get_tree, walk
 from app.utils.state.state_node import StateNode
 from zmq.eventloop.zmqstream import ZMQStream
+
+from tornado.wsgi import WSGIContainer
 import tyro
 import ngrok
 from gevent import pywsgi
 from geventwebsocket.handler import WebSocketHandler
+from tornado.httpserver import HTTPServer
 from app import app
 
 
@@ -21,7 +25,8 @@ class WebSocketHandler(WebSocketHandler):  # pylint: disable=abstract-method
         # print(args[2].get_environ())
         # print(type(args[2].get_environ()))
         self.bridge = args[2].get_environ()['bridge']
-        # print(kwargs)
+        print(self.bridge)
+        print(kwargs)
         super().__init__(*args)
 
     def check_origin(self, origin):
@@ -83,7 +88,8 @@ class ZMQWebSocketBridge:
     def __init__(self, zmq_port: int, websocket_port: int, ip_address: str):
         self.zmq_port = zmq_port
         self.websocket_pool = set()
-        self.app = app
+        self.app = self.make_app()
+        self.ioloop = tornado.ioloop.IOLoop.current()
 
         # zmq
         zmq_url = f"tcp://{ip_address}:{self.zmq_port:d}"
@@ -93,11 +99,17 @@ class ZMQWebSocketBridge:
         listen_kwargs = {"address": "0.0.0.0"}
         # self.app.listen(websocket_port, **listen_kwargs)
         # environ_class = {'bridge': self}
-        server = pywsgi.WSGIServer((listen_kwargs["address"], websocket_port), app, handler_class=WebSocketHandler,
-                                   environ={'bridge': self})
+
+        # server = pywsgi.WSGIServer((listen_kwargs["address"], websocket_port), app, handler_class=WebSocketHandler,
+        #                            environ={'bridge': self})
+
+        http_server = HTTPServer(WSGIContainer(app, handler_class=WebSocketHandler,
+                                    environ={'bridge': self}))
+        # http_server = HTTPServer(server)
+        http_server.listen(websocket_port)
         web_url = str(listen_kwargs["address"]) + ':' + str(websocket_port)
         print('server start at: ' + web_url)
-        server.serve_forever()
+        # server.serve_forever()
 
         self.websocket_port = websocket_port
         self.websocket_url = f"0.0.0.0:{self.websocket_port}"
@@ -112,6 +124,9 @@ class ZMQWebSocketBridge:
     # def make_app(self):
     #     """Create a tornado application for the websocket server."""
     #     return tornado.web.Application([(r"/", WebSocketHandler, {"bridge": self})])
+    def make_app(self):
+        """Create a tornado application for the websocket server."""
+        return app
 
     def handle_zmq(self, frames: List[bytes]):
         """Switch function that places commands in tree based on websocket command
@@ -202,6 +217,7 @@ def run_viewer_bridge_server(
         # <NgrokTunnel: "http://<public_sub>.ngrok.io" -> "http://localhost:80">
         http_tunnel = ngrok.connect(addr=str(zmq_port), proto="tcp")
         print(http_tunnel)
+    # print("test")
 
     bridge = ZMQWebSocketBridge(zmq_port=zmq_port, websocket_port=websocket_port, ip_address=ip_address)
     print(bridge)
@@ -213,7 +229,7 @@ def run_viewer_bridge_server(
 
 def entrypoint():
     """The main entrypoint."""
-    # print("test")
+
     tyro.extras.set_accent_color("bright_yellow")
     tyro.cli(run_viewer_bridge_server)
 
