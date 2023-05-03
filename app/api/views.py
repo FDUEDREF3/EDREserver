@@ -1,9 +1,11 @@
 from flask import Blueprint  # 从flask包里面导入Flask核心类
-from flask import request
+from flask import request, send_file,jsonify
+from multiprocessing import Process
 from app import db
 from app.models.projectList import ProjectList
 from datetime import datetime
 from pathlib import Path
+import os
 
 from app.nerfstudio.process_data.video_to_nerfstudio_dataset import VideoToNerfstudioDataset 
 from app.nerfstudio.process_data.images_to_nerstudio_dataset import ImagesToNerfstudioDataset
@@ -55,19 +57,26 @@ def addData():
     return "数据操作成功"
 
 
-@api.route('/startTrain', methods=["POST"])  # 测试向数据库中添加数据
-def startTrain():
-    trainData = request.form
-    # projectName = trainData.get("name")
-    # images = trainData.get("files")
-    projectName = "poster"
-    imagePathHead = "./app/data/pureImages/"
-    outputPathHead = "./app/data/afterColmap/"
-    finalOutputPathHead = "./app/data/afterNerfacto/"
+@api.route('/getAllProjects', methods=["get"])   #获取所有项目
+def getAllProjects():
+    projectList = ProjectList.query.all()
+    reProjectList = []
+    for proj in projectList:
+        avatarImg = send_file(proj.avatarImgPath, mimetype='image/png')
+        projDict = {"id": proj.id, "title": proj.title, "avatar": avatarImg, "datetime": proj.createTime, "state": proj.state, "imgNum": proj.imgNum}
+        reProjectList.append(projDict)
+    return jsonify({'projects': reProjectList})
+
+def trainthread(imagePathHead, outputPathHead, finalOutputPathHead, projectName):
     imagesToNerfstudioDataset = ImagesToNerfstudioDataset(Path(imagePathHead + projectName), Path(outputPathHead + projectName))
     # imagesToNerfstudioDataset.aquireData(Path(imagePathHead + projectName), Path(outputPathHead))
     # imagesToNerfstudioDataset.main()
-    print("colmap完成")
+    # print("colmap完成")
+    """colmap后修改数据库"""
+    proj = ProjectList.query.filter(ProjectList.title==projectName).first()
+    proj.state = 1
+    db.session.commit()
+    print("test")
 
     dataParser = NerfstudioDataParserConfig()
     dataParser.getDataDir(Path(outputPathHead + projectName))
@@ -105,8 +114,57 @@ def startTrain():
         vis="tensorboard",           #不进行前端显示
     )
     nowMethod.set_output_dir(Path(finalOutputPathHead + projectName))
-    starTrain(nowMethod)
-    return "训练完成"
+    # starTrain(nowMethod)
+    """训练完成后修改数据库"""
+    # proj = ProjectList.query.get_or_404(ProjectList.title==projectName)
+    proj = ProjectList.query.filter(ProjectList.title==projectName).first()
+    proj.state = 2
+    db.session.commit()
+    # return "训练完成"
+
+
+
+@api.route('/startTrain', methods=["POST"])  # 测试向数据库中添加数据
+def startTrain():
+    trainData = request.form
+    projectName = trainData.get("title")
+    images = request.files.getlist("imageFiles")
+    avatar = request.files.get("avatar")
+    dateTimeString = trainData.get("datetime")
+    formatString = '%Y-%m-%d' 
+    dateTimeObj = datetime.strptime(dateTimeString, formatString)
+
+    state = 0   #0，1，2分别代表colmap中，训练中，训练结束
+
+    # images = request.files
+    # projectName = "poster"
+    # print(projectName)
+    # print(images)
+    # print(type(images))
+
+
+    imagePathHead = "./app/data/pureImages/"
+    outputPathHead = "./app/data/afterColmap/"
+    finalOutputPathHead = "./app/data/afterNerfacto/"
+    avatarPathHead = "./app/data/avatar/"
+    if not os.path.exists(imagePathHead + projectName + '/'):
+        os.mkdir(imagePathHead + projectName + '/')
+    for imgs in images:
+    # images.save(imagePathHead + projectName + '/' + images.filename)
+        imgs_name = os.path.basename(imgs.filename)
+        imgs.save(imagePathHead + projectName + '/' + imgs_name)
+
+    avatarPath = avatarPathHead + projectName + Path(avatar.filename).suffix
+    avatar.save(avatarPath)
+
+    projectList = ProjectList(title=projectName, avatarImgPath=avatarPath, projectPath=imagePathHead+projectName, imgNum=len(images), createTime=dateTimeObj.date(), state=state)
+    db.session.add(projectList)
+    db.session.commit()
+
+    process = Process(target=trainthread, args=(imagePathHead, outputPathHead, finalOutputPathHead, projectName))
+    process.start()
+    
+    return jsonify({'status': 'success'})
 
 
     # projectList = ProjectList(projectName="test2", previewImgPath="./data/proj1/test2", projectPath="./dataproj1", imgNum=200, createTime=datetime.now())
