@@ -7,11 +7,14 @@ class ProjectList(db.Model):
     __tablename__ = 'projectList'
     #定义列对象
     id = db.Column(db.Integer, primary_key=True)
-    projectName = db.Column(db.Text)
-    previewImgPath = db.Column(db.Text)
+    # projectName = db.Column(db.Text)
+    title = db.Column(db.String)
+    avatarImgPath = db.Column(db.Text)
     projectPath = db.Column(db.Text)
     imgNum = db.Column(db.Integer)
-    createTime = db.Column(db.DateTime)
+    # createTime = db.Column(db.DateTime)  #带有时分秒
+    createTime = db.Column(db.Date)
+    state = db.Column(db.Integer)
 
     # repr()方法显示一个可读字符串
     def __repr__(self):
