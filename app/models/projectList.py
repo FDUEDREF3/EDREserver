@@ -20,3 +20,4 @@ class ProjectList(db.Model):
     # repr()方法显示一个可读字符串
     def __repr__(self):
      return '<ProjectList {}>'.format(self.title)
+

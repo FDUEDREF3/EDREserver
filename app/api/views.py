@@ -211,4 +211,3 @@ def startViewer():
     # runViewer.main()
     return jsonify({'status': 'success'})
 
-
