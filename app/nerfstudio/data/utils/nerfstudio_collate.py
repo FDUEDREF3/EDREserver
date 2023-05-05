@@ -97,6 +97,7 @@ def nerfstudio_collate(
     elem_type = type(elem)
     if isinstance(elem, torch.Tensor):  # pylint: disable=no-else-return
         out = None
+        # print(torch.utils.data.get_worker_info())
         if torch.utils.data.get_worker_info() is not None:
             # If we're in a background process, concatenate directly into a
             # shared memory tensor to avoid an extra copy

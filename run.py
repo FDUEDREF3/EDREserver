@@ -1,10 +1,12 @@
 import sys
-sys.path.append("./app")
+sys.path.append("/home/dcy/code/EDREserver/app")
+
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask  # 从flask包里面导入Flask核心类
 from app.config.settings import Config
 from app.create_app import create_app
 from flask_cors import CORS
+
 
 from flask_sockets import Sockets
 from gevent import pywsgi
