@@ -15,9 +15,16 @@ class ProjectList(db.Model):
     # createTime = db.Column(db.DateTime)  #带有时分秒
     createTime = db.Column(db.Date)
     state = db.Column(db.Integer)
+<<<<<<< HEAD
     configPath = db.Column(db.String)
 
     # repr()方法显示一个可读字符串
     def __repr__(self):
      return '<ProjectList {}>'.format(self.title)
 
+=======
+
+    # repr()方法显示一个可读字符串
+    def __repr__(self):
+     return '<ProjectList {}>'.format(self.projectName)
+>>>>>>> 8ac7fbad4e168e7df784aa83718d713ca4f15365
