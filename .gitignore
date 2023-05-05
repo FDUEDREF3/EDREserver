@@ -1,0 +1,7 @@
+# this is .gitignore file.
+# 以下是忽略的文件
+__pycache__/
+.idea/
+.vscode/
+app/data/
+=0.5.6

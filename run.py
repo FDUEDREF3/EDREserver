@@ -1,5 +1,6 @@
 import sys
-sys.path.append("./app")
+sys.path.append("/home/dcy/code/EDREserver/app")
+
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask  # 从flask包里面导入Flask核心类
 from app.config.settings import Config

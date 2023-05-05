@@ -432,7 +432,6 @@ class VanillaDataManager(DataManager):  # pylint: disable=abstract-method
             dataparser_outputs=self.train_dataparser_outputs,
             scale_factor=self.config.camera_res_scale_factor,
         )
-
     def create_eval_dataset(self) -> InputDataset:
         """Sets up the data loaders for evaluation"""
         return InputDataset(
