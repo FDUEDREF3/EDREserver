@@ -206,10 +206,10 @@ def startViewer():
     if len(config_path) == 0:
         return jsonify({'status': 'fail'})
     """命令行运行"""
-    commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
-    os.system(commandString)
+    # commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
+    # os.system(commandString)
 
     """调包运行"""
-    # runViewer = RunViewer(Path(config_path))
-    # runViewer.main()
+    runViewer = RunViewer(Path(config_path))
+    runViewer.main()
     return jsonify({'status': 'success'})

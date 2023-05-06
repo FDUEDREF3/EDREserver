@@ -10,7 +10,7 @@ from flask_cors import CORS
 from flask_sockets import Sockets
 from gevent import pywsgi
 # from geventwebsocket.handler import WebSocketHandler
-from app.utils.ZMQBridge import WebSocketHandler
+# from app.utils.ZMQBridge import WebSocketHandler
 from app import app
 
 if __name__ == "__main__":
