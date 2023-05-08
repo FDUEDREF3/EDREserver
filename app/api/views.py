@@ -15,6 +15,8 @@ import concurrent.futures
 import threading
 import dill
 from multiprocessing import context
+import subprocess
+
 
 from app.nerfstudio.process_data.video_to_nerfstudio_dataset import VideoToNerfstudioDataset 
 from app.nerfstudio.process_data.images_to_nerstudio_dataset import ImagesToNerfstudioDataset
@@ -32,6 +34,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 
 api = Blueprint('api', __name__)
+
+
+"""临时用"""
+processDict = {}
+
 
 @api.route('/h',methods=["GET"])  # 使用app提供的route装饰器 对函数进行装饰 即可成为视图函数
 def hello():
@@ -128,8 +135,11 @@ def trainthread(imagePathHead, outputPathHead, finalOutputPathHead, projectName)
     # starTrainMethod(nowMethod)
 
     """命令行运行"""
+    # commandString = "python /home/dcy/code/EDREserver/app/scripts/train.py nerfacto " + "--data " + outputPathHead + projectName + " --output-dir " + finalOutputPathHead + projectName + " " + "--viewer.quit-on-train-completion True"
     commandString = "python /home/dcy/code/EDREserver/app/scripts/train.py nerfacto " + "--data " + outputPathHead + projectName + " --output-dir " + finalOutputPathHead + projectName + " --vis tensorboard " + "--viewer.quit-on-train-completion True"
     os.system(commandString)
+    # p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/train.py nerfacto','--data', outputPathHead + projectName, "--output-dir", finalOutputPathHead + projectName, "--viewer.quit-on-train-completion True"])
+    
     # print("训练完成")
     """训练完成后修改数据库"""
     proj = ProjectList.query.filter(ProjectList.title==projectName).first()
@@ -198,6 +208,18 @@ def startTrain():
     # db.session.add(projectList)
     # db.session.commit()
 
+
+# def viewerthread(config_path):
+#     """命令行运行"""
+#     #commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
+#     # os.system(commandString)
+
+
+#     """调包运行"""
+#     # runViewer = RunViewer(Path(config_path))
+#     # runViewer.main()
+
+
 @api.route('/viewer', methods=["POST"])  # 测试向数据库中添加数据
 def startViewer():
     title = request.args["title"]
@@ -205,11 +227,30 @@ def startViewer():
     config_path = proj.configPath
     if len(config_path) == 0:
         return jsonify({'status': 'fail'})
-    """命令行运行"""
+    """异步调用"""
+    # process = Process(target=viewerthread, args=(config_path,))
+    # process.start()
+    # commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
+    # p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path], 
+    #                      stdout = subprocess.PIPE,
+    #                      stderr = subprocess.PIPE,
+    #                      universal_newlines=True,
+    #                      shell=True)
+    p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path])
+    processDict[title] = p
     # commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
     # os.system(commandString)
+    # runViewer = RunViewer(Path(config_path))
+    # runViewer.main()
+    # p.kill()    
+    # print (p.stdout.read())    
 
-    """调包运行"""
-    runViewer = RunViewer(Path(config_path))
-    runViewer.main()
+    return jsonify({'status': 'success'})
+
+
+@api.route('/viewerClose', methods=["POST"])  
+def stopViewer():
+    title = request.args["title"]
+    p = processDict.pop(title)
+    p.kill()
     return jsonify({'status': 'success'})

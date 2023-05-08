@@ -20,7 +20,7 @@ if __name__ == "__main__":
     # print("test")
     # app.run(host='0.0.0.0')
     address = '0.0.0.0'
-    web_port = 8080
+    web_port = 8081
     server = pywsgi.WSGIServer((address, web_port), app)
     # server = pywsgi.WSGIServer(('', 5010), app, handler_class=WebSocketHandler)
     web_url = str(address) + ':' + str(web_port)
