@@ -31,6 +31,7 @@ from app.nerfstudio.engine.optimizers import AdamOptimizerConfig
 from app.nerfstudio.configs.base_config import ViewerConfig
 from app.scripts.viewer.run_viewer import RunViewer
 from concurrent.futures import ThreadPoolExecutor
+import time
 
 
 api = Blueprint('api', __name__)
@@ -92,61 +93,64 @@ def trainthread(imagePathHead, outputPathHead, finalOutputPathHead, projectName)
     imagesToNerfstudioDataset.main()
     # print("colmap完成")
     """colmap后修改数据库"""
-    proj = ProjectList.query.filter(ProjectList.title==projectName).first()
-    proj.state = 1
-    db.session.commit()
+    with app.app_context():
+        proj = ProjectList.query.filter(ProjectList.title==projectName).first()
+        proj.state = 1
+        db.session.commit()
 
     """调包运行"""
-    # dataParser = NerfstudioDataParserConfig()
-    # dataParser.getDataDir(Path(outputPathHead + projectName))
+    dataParser = NerfstudioDataParserConfig()
+    dataParser.getDataDir(Path(outputPathHead + projectName))
 
-    # nowMethod = TrainerConfig(
-    #     method_name="nerfacto",
-    #     steps_per_eval_batch=500,
-    #     steps_per_save=2000,
-    #     max_num_iterations=30000,
-    #     mixed_precision=True,
-    #     pipeline=VanillaPipelineConfig(
-    #         datamanager=VanillaDataManagerConfig(
-    #             dataparser=dataParser,
-    #             train_num_rays_per_batch=4096,
-    #             eval_num_rays_per_batch=4096,
-    #             camera_optimizer=CameraOptimizerConfig(
-    #                 mode="SO3xR3", optimizer=AdamOptimizerConfig(lr=6e-4, eps=1e-8, weight_decay=1e-2)
-    #             ),
-    #         ),
-    #         model=NerfactoModelConfig(eval_num_rays_per_chunk=1 << 15),
-    #     ),
-    #     optimizers={
-    #         "proposal_networks": {
-    #             "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
-    #             "scheduler": None,
-    #         },
-    #         "fields": {
-    #             "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
-    #             "scheduler": None,
-    #         },
-    #     },
-    #     # viewer=ViewerConfig(num_rays_per_chunk=1 << 15),
-    #     # vis="viewer",
-    #     vis="tensorboard",           #不进行前端显示
-    # )
-    # nowMethod.set_output_dir(Path(finalOutputPathHead + projectName))
-    # starTrainMethod(nowMethod)
+    nowMethod = TrainerConfig(
+        method_name="nerfacto",
+        steps_per_eval_batch=500,
+        steps_per_save=2000,
+        max_num_iterations=30000,
+        mixed_precision=True,
+        pipeline=VanillaPipelineConfig(
+            datamanager=VanillaDataManagerConfig(
+                dataparser=dataParser,
+                train_num_rays_per_batch=4096,
+                eval_num_rays_per_batch=4096,
+                camera_optimizer=CameraOptimizerConfig(
+                    mode="SO3xR3", optimizer=AdamOptimizerConfig(lr=6e-4, eps=1e-8, weight_decay=1e-2)
+                ),
+            ),
+            model=NerfactoModelConfig(eval_num_rays_per_chunk=1 << 15),
+        ),
+        optimizers={
+            "proposal_networks": {
+                "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
+                "scheduler": None,
+            },
+            "fields": {
+                "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
+                "scheduler": None,
+            },
+        },
+        viewer=ViewerConfig(num_rays_per_chunk=1 << 15, quit_on_train_completion=True),
+        # vis="viewer",
+        vis="tensorboard",           #不进行前端显示
+    )
+    nowMethod.set_output_dir(Path(finalOutputPathHead + projectName))
+    starTrainMethod(nowMethod)
+
 
     """命令行运行"""
     # commandString = "python /home/dcy/code/EDREserver/app/scripts/train.py nerfacto " + "--data " + outputPathHead + projectName + " --output-dir " + finalOutputPathHead + projectName + " " + "--viewer.quit-on-train-completion True"
-    commandString = "python /home/dcy/code/EDREserver/app/scripts/train.py nerfacto " + "--data " + outputPathHead + projectName + " --output-dir " + finalOutputPathHead + projectName + " --vis tensorboard " + "--viewer.quit-on-train-completion True"
-    os.system(commandString)
+    # commandString = "python /home/dcy/code/EDREserver/app/scripts/train.py nerfacto " + "--data " + outputPathHead + projectName + " --output-dir " + finalOutputPathHead + projectName + " --vis tensorboard " + "--viewer.quit-on-train-completion True"
+    # os.system(commandString)
     # p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/train.py nerfacto','--data', outputPathHead + projectName, "--output-dir", finalOutputPathHead + projectName, "--viewer.quit-on-train-completion True"])
     
     # print("训练完成")
     """训练完成后修改数据库"""
-    proj = ProjectList.query.filter(ProjectList.title==projectName).first()
-    config_path = Path(finalOutputPathHead + projectName + "/nerfacto/" + "config.yml")
-    proj.configPath = str(config_path)
-    proj.state = 2
-    db.session.commit()
+    with app.app_context():
+        proj = ProjectList.query.filter(ProjectList.title==projectName).first()
+        config_path = Path(finalOutputPathHead + projectName + "/nerfacto/" + "config.yml")
+        proj.configPath = str(config_path)
+        proj.state = 2
+        db.session.commit()
     # return "训练完成"
 
 # def callback(result):
@@ -182,8 +186,10 @@ def startTrain():
     db.session.add(projectList)
     db.session.commit()
 
-    process = Process(target=trainthread, args=(imagePathHead, outputPathHead, finalOutputPathHead, projectName))
-    process.start()
+    # process = Process(target=trainthread, args=(imagePathHead, outputPathHead, finalOutputPathHead, projectName))
+    # process.start()
+    thread = threading.Thread(target=trainthread, args=(imagePathHead, outputPathHead, finalOutputPathHead, projectName))
+    thread.start()
 
     return jsonify({'status': 'success'})
 
@@ -222,11 +228,14 @@ def startTrain():
 
 @api.route('/viewer', methods=["POST"])  # 测试向数据库中添加数据
 def startViewer():
-    title = request.args["title"]
+    # title = request.args["title"]
+    title = request.form.get("title")
     proj = ProjectList.query.filter(ProjectList.title==title).first()
     config_path = proj.configPath
     if len(config_path) == 0:
         return jsonify({'status': 'fail'})
+    address = "10.177.35.76"
+    port = "7007"
     """异步调用"""
     # process = Process(target=viewerthread, args=(config_path,))
     # process.start()
@@ -238,6 +247,7 @@ def startViewer():
     #                      shell=True)
     p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path])
     processDict[title] = p
+    time.sleep(5)
     # commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
     # os.system(commandString)
     # runViewer = RunViewer(Path(config_path))
@@ -245,12 +255,16 @@ def startViewer():
     # p.kill()    
     # print (p.stdout.read())    
 
-    return jsonify({'status': 'success'})
+    websocket_url = "ws://" + address + ":" + port
+
+    return jsonify({'status': 'success', 'websocket_url': websocket_url})
+
 
 
 @api.route('/viewerClose', methods=["POST"])  
 def stopViewer():
-    title = request.args["title"]
+    # title = request.args["title"]
+    title = request.form.get("title")
     p = processDict.pop(title)
     p.kill()
     return jsonify({'status': 'success'})
