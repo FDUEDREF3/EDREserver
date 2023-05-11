@@ -25,6 +25,7 @@ if __name__ == "__main__":
     # server = pywsgi.WSGIServer(('', 5010), app, handler_class=WebSocketHandler)
     web_url = str(address) + ':' + str(web_port)
     print('server start at: ' + web_url)
-    server.serve_forever()
+    # server.serve_forever()
+    app.run(host=address,port=web_port,threaded=True)
     # app.serve_forever()
 

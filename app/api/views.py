@@ -7,6 +7,10 @@ from app.models.projectList import ProjectList
 from datetime import datetime
 from pathlib import Path
 import os
+import time
+
+import ctypes
+import inspect
 
 import multiprocessing
 from werkzeug.datastructures import FileStorage
@@ -31,6 +35,9 @@ from app.nerfstudio.engine.optimizers import AdamOptimizerConfig
 from app.nerfstudio.configs.base_config import ViewerConfig
 from app.scripts.viewer.run_viewer import RunViewer
 from concurrent.futures import ThreadPoolExecutor
+from app.nerfstudio.utils.eval_utils import eval_setup
+from dataclasses import dataclass, field, fields
+from app.scripts.viewer.run_viewer import ViewerConfigWithoutNumRays, _start_viewer
 
 
 api = Blueprint('api', __name__)
@@ -92,61 +99,64 @@ def trainthread(imagePathHead, outputPathHead, finalOutputPathHead, projectName)
     imagesToNerfstudioDataset.main()
     # print("colmap完成")
     """colmap后修改数据库"""
-    proj = ProjectList.query.filter(ProjectList.title==projectName).first()
-    proj.state = 1
-    db.session.commit()
+    with app.app_context():
+        proj = ProjectList.query.filter(ProjectList.title==projectName).first()
+        proj.state = 1
+        db.session.commit()
 
     """调包运行"""
-    # dataParser = NerfstudioDataParserConfig()
-    # dataParser.getDataDir(Path(outputPathHead + projectName))
+    dataParser = NerfstudioDataParserConfig()
+    dataParser.getDataDir(Path(outputPathHead + projectName))
 
-    # nowMethod = TrainerConfig(
-    #     method_name="nerfacto",
-    #     steps_per_eval_batch=500,
-    #     steps_per_save=2000,
-    #     max_num_iterations=30000,
-    #     mixed_precision=True,
-    #     pipeline=VanillaPipelineConfig(
-    #         datamanager=VanillaDataManagerConfig(
-    #             dataparser=dataParser,
-    #             train_num_rays_per_batch=4096,
-    #             eval_num_rays_per_batch=4096,
-    #             camera_optimizer=CameraOptimizerConfig(
-    #                 mode="SO3xR3", optimizer=AdamOptimizerConfig(lr=6e-4, eps=1e-8, weight_decay=1e-2)
-    #             ),
-    #         ),
-    #         model=NerfactoModelConfig(eval_num_rays_per_chunk=1 << 15),
-    #     ),
-    #     optimizers={
-    #         "proposal_networks": {
-    #             "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
-    #             "scheduler": None,
-    #         },
-    #         "fields": {
-    #             "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
-    #             "scheduler": None,
-    #         },
-    #     },
-    #     # viewer=ViewerConfig(num_rays_per_chunk=1 << 15),
-    #     # vis="viewer",
-    #     vis="tensorboard",           #不进行前端显示
-    # )
-    # nowMethod.set_output_dir(Path(finalOutputPathHead + projectName))
-    # starTrainMethod(nowMethod)
+    nowMethod = TrainerConfig(
+        method_name="nerfacto",
+        steps_per_eval_batch=500,
+        steps_per_save=2000,
+        max_num_iterations=30000,
+        mixed_precision=True,
+        pipeline=VanillaPipelineConfig(
+            datamanager=VanillaDataManagerConfig(
+                dataparser=dataParser,
+                train_num_rays_per_batch=4096,
+                eval_num_rays_per_batch=4096,
+                camera_optimizer=CameraOptimizerConfig(
+                    mode="SO3xR3", optimizer=AdamOptimizerConfig(lr=6e-4, eps=1e-8, weight_decay=1e-2)
+                ),
+            ),
+            model=NerfactoModelConfig(eval_num_rays_per_chunk=1 << 15),
+        ),
+        optimizers={
+            "proposal_networks": {
+                "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
+                "scheduler": None,
+            },
+            "fields": {
+                "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
+                "scheduler": None,
+            },
+        },
+        viewer=ViewerConfig(num_rays_per_chunk=1 << 15, quit_on_train_completion=True),
+        # vis="viewer",
+        vis="tensorboard",           #不进行前端显示
+    )
+    nowMethod.set_output_dir(Path(finalOutputPathHead + projectName))
+    starTrainMethod(nowMethod)
+
 
     """命令行运行"""
     # commandString = "python /home/dcy/code/EDREserver/app/scripts/train.py nerfacto " + "--data " + outputPathHead + projectName + " --output-dir " + finalOutputPathHead + projectName + " " + "--viewer.quit-on-train-completion True"
-    commandString = "python /home/dcy/code/EDREserver/app/scripts/train.py nerfacto " + "--data " + outputPathHead + projectName + " --output-dir " + finalOutputPathHead + projectName + " --vis tensorboard " + "--viewer.quit-on-train-completion True"
-    os.system(commandString)
+    # commandString = "python /home/dcy/code/EDREserver/app/scripts/train.py nerfacto " + "--data " + outputPathHead + projectName + " --output-dir " + finalOutputPathHead + projectName + " --vis tensorboard " + "--viewer.quit-on-train-completion True"
+    # os.system(commandString)
     # p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/train.py nerfacto','--data', outputPathHead + projectName, "--output-dir", finalOutputPathHead + projectName, "--viewer.quit-on-train-completion True"])
     
     # print("训练完成")
     """训练完成后修改数据库"""
-    proj = ProjectList.query.filter(ProjectList.title==projectName).first()
-    config_path = Path(finalOutputPathHead + projectName + "/nerfacto/" + "config.yml")
-    proj.configPath = str(config_path)
-    proj.state = 2
-    db.session.commit()
+    with app.app_context():
+        proj = ProjectList.query.filter(ProjectList.title==projectName).first()
+        config_path = Path(finalOutputPathHead + projectName + "/nerfacto/" + "config.yml")
+        proj.configPath = str(config_path)
+        proj.state = 2
+        db.session.commit()
     # return "训练完成"
 
 # def callback(result):
@@ -182,8 +192,10 @@ def startTrain():
     db.session.add(projectList)
     db.session.commit()
 
-    process = Process(target=trainthread, args=(imagePathHead, outputPathHead, finalOutputPathHead, projectName))
-    process.start()
+    # process = Process(target=trainthread, args=(imagePathHead, outputPathHead, finalOutputPathHead, projectName))
+    # process.start()
+    thread = threading.Thread(target=trainthread, args=(imagePathHead, outputPathHead, finalOutputPathHead, projectName))
+    thread.start()
 
     return jsonify({'status': 'success'})
 
@@ -208,49 +220,119 @@ def startTrain():
     # db.session.add(projectList)
     # db.session.commit()
 
+# def viewerthread(config, pipeline, step):
+#     _start_viewer(config, pipeline, step)
 
-# def viewerthread(config_path):
-#     """命令行运行"""
-#     #commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
-#     # os.system(commandString)
-
-
-#     """调包运行"""
-#     # runViewer = RunViewer(Path(config_path))
-#     # runViewer.main()
+def viewerthread(config_path, title):
+    """命令行运行"""
+    #commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
+    # os.system(commandString)
 
 
-@api.route('/viewer', methods=["POST"])  # 测试向数据库中添加数据
+    """调包运行"""
+    # t = threading.currentThread()
+    # processDict[title] = t.ident
+    # print("pid:", t.ident)
+    runViewer = RunViewer(Path(config_path))
+    runViewer.main()
+
+
+@api.route('/viewer', methods=["POST"])  # 启动前端渲染
 def startViewer():
-    title = request.args["title"]
+    # TODO : try catch
+    # title = request.args["title"]
+    title = request.form.get("title")
     proj = ProjectList.query.filter(ProjectList.title==title).first()
     config_path = proj.configPath
+    address = "10.177.35.76"
+    port = "7007"
     if len(config_path) == 0:
         return jsonify({'status': 'fail'})
     """异步调用"""
     # process = Process(target=viewerthread, args=(config_path,))
     # process.start()
+    # viewerConfigWithoutNumRays = field(default_factory=ViewerConfigWithoutNumRays)
+
+    # config, pipeline, _, step = eval_setup(
+    #     Path(config_path),
+    #     eval_num_rays_per_chunk=None,
+    #     test_mode="test",
+    # )
+    # print(type(viewerConfigWithoutNumRays))
+    # num_rays_per_chunk = config.viewer.num_rays_per_chunk
+    # assert viewerConfigWithoutNumRays.num_rays_per_chunk == -1
+    # config.vis = "viewer"
+    # config.viewer = viewerConfigWithoutNumRays.as_viewer_config()
+    # config.viewer.num_rays_per_chunk = num_rays_per_chunk
+    # print(type(config.viewer))
+
+    # thread = threading.Thread(target=viewerthread, args=(config, pipeline, step))
+    thread = threading.Thread(target=viewerthread, args=(config_path, title))
+    thread.start()
+
+    processDict[title] = thread
+
+
+
     # commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
     # p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path], 
     #                      stdout = subprocess.PIPE,
     #                      stderr = subprocess.PIPE,
     #                      universal_newlines=True,
     #                      shell=True)
-    p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path])
-    processDict[title] = p
+    # p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path])
+    # processDict[title] = p
     # commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
     # os.system(commandString)
     # runViewer = RunViewer(Path(config_path))
     # runViewer.main()
     # p.kill()    
-    # print (p.stdout.read())    
+    # print (p.stdout.read()) 
+    websocket_url = "ws://" + address + ":" + port
 
-    return jsonify({'status': 'success'})
+    return jsonify({'status': 'success', 'websocket_url': websocket_url})
 
+def _async_raise(tid, exctype):
+    """raises the exception, performs cleanup if needed"""
+    tid = ctypes.c_long(tid)
+    print(tid)
+    if not inspect.isclass(exctype):
+        exctype = type(exctype)
+    res = ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, ctypes.py_object(exctype))
+    if res == 0:
+        raise ValueError("invalid thread id")
+    elif res != 1:
+        # """if it returns a number greater than one, you're in trouble,
+        # and you should call it again with exc=NULL to revert the effect"""
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
+        raise SystemError("PyThreadState_SetAsyncExc failed")
 
-@api.route('/viewerClose', methods=["POST"])  
+def stop_thread(thread):
+    _async_raise(thread.ident, SystemExit)
+
+def free_port(port):
+    with os.popen('lsof -i:'+str(port)) as res:
+        res = res.read().split('\n')
+    result = []
+    for line in res:
+        temp = [i for i in line.split(' ') if i != '']
+        if len(temp) > 4:
+            result.append({'pid': temp[1], 'comand': temp[0], 'user': temp[2],'nmae':temp[8]})
+    # print("占用{}端口的进程如下:".format(port))
+    # print(result)
+    if len(result)>1:
+        for i in range(1,len(result)): # 每个line都是一个字典
+            pid=result[i]['pid']
+            result = os.popen("kill -9 "+str(pid))
+            print("杀死占用{}的进程号{},成功".format(port,pid))
+
+@api.route('/viewerClose', methods=["POST"]) 
 def stopViewer():
     title = request.args["title"]
     p = processDict.pop(title)
-    p.kill()
+    stop_thread(p)
+    print(p.is_alive())
+    free_port("7007")
+    print(p.is_alive())
+    
     return jsonify({'status': 'success'})
