@@ -16,6 +16,7 @@ class ProjectList(db.Model):
     createTime = db.Column(db.Date)
     state = db.Column(db.Integer)
     configPath = db.Column(db.String)
+    colmapPath = db.Column(db.Text)
 
     # repr()方法显示一个可读字符串
     def __repr__(self):

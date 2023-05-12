@@ -182,9 +182,9 @@ def startTrain():
     avatarPath = avatarPathHead + projectName + Path(avatar.filename).suffix
     avatar.save(avatarPath)
 
-    projectList = ProjectList(title=projectName, avatarImgPath=avatarPath, projectPath=imagePathHead+projectName, imgNum=len(images), createTime=dateTimeObj.date(), state=state, configPath=str(''))
-    db.session.add(projectList)
-    db.session.commit()
+    # projectList = ProjectList(title=projectName, avatarImgPath=avatarPath, projectPath=imagePathHead+projectName, imgNum=len(images), createTime=dateTimeObj.date(), state=state, configPath=str(''))
+    # db.session.add(projectList)
+    # db.session.commit()
 
     # process = Process(target=trainthread, args=(imagePathHead, outputPathHead, finalOutputPathHead, projectName))
     # process.start()
@@ -268,3 +268,143 @@ def stopViewer():
     p = processDict.pop(title)
     p.kill()
     return jsonify({'status': 'success'})
+
+@api.route('/createProject', methods=["POST"])
+def createProject():
+    trainData = request.form
+    projectName = trainData.get("title")
+    avatar = request.files.get("avatar")
+    dateTimeString = trainData.get("datetime")
+    formatString = '%Y-%m-%d' 
+    dateTimeObj = datetime.strptime(dateTimeString, formatString)
+
+    state = 0   #0，1，2分别代表colmap中，训练中，训练结束
+    avatarPathHead = "./app/data/avatar/"
+    imagePathHead = "./app/data/pureImages/"
+    outputPathHead = "./app/data/afterColmap/"
+    if not os.path.exists(imagePathHead + projectName + '/'):
+        os.mkdir(imagePathHead + projectName + '/')
+    avatarPath = avatarPathHead + projectName + Path(avatar.filename).suffix
+    avatar.save(avatarPath)
+
+    projectList = ProjectList(title=projectName, avatarImgPath=avatarPath, projectPath=imagePathHead+projectName, imgNum=0, createTime=dateTimeObj.date(), state=state, configPath=str(''), colmapPath=outputPathHead+projectName)
+    db.session.add(projectList)
+    db.session.commit()
+
+    return jsonify({'status': 'success'})
+
+@api.route('/uploadImgs', methods=["POST"])
+def uploadImgs():
+    title = request.form.get("title")
+    images = request.files.getlist("imageFiles")
+
+    imagePathHead = "./app/data/pureImages/"
+    proj = ProjectList.query.filter(ProjectList.title==title).first()
+    title = proj.title
+    project_path = proj.projectPath
+    if len(project_path) == 0:
+        return jsonify({'status': 'fail'})
+
+    for imgs in images:
+        imgs_name = os.path.basename(imgs.filename)
+        imgs.save(imagePathHead + title + '/' + imgs_name)
+
+    return jsonify({'status': 'success'})
+
+def colmapthread(imagePath, outputPath, projectName):
+    imagesToNerfstudioDataset = ImagesToNerfstudioDataset(Path(imagePath), Path(outputPath))
+    # imagesToNerfstudioDataset.aquireData(Path(imagePathHead + projectName), Path(outputPathHead)) #增加数据，目前不需要
+    imagesToNerfstudioDataset.main()
+    # print("colmap完成")
+    """colmap后修改数据库"""
+    with app.app_context():
+        proj = ProjectList.query.filter(ProjectList.title==projectName).first()
+        proj.state = 1
+        db.session.commit()
+
+def nerfactothread(colmapPath,finalOutputPathHead,projectName):
+    """调包运行"""
+    dataParser = NerfstudioDataParserConfig()
+    dataParser.getDataDir(Path(colmapPath))
+
+    nowMethod = TrainerConfig(
+        method_name="nerfacto",
+        steps_per_eval_batch=500,
+        steps_per_save=2000,
+        max_num_iterations=30000,
+        mixed_precision=True,
+        pipeline=VanillaPipelineConfig(
+            datamanager=VanillaDataManagerConfig(
+                dataparser=dataParser,
+                train_num_rays_per_batch=4096,
+                eval_num_rays_per_batch=4096,
+                camera_optimizer=CameraOptimizerConfig(
+                    mode="SO3xR3", optimizer=AdamOptimizerConfig(lr=6e-4, eps=1e-8, weight_decay=1e-2)
+                ),
+            ),
+            model=NerfactoModelConfig(eval_num_rays_per_chunk=1 << 15),
+        ),
+        optimizers={
+            "proposal_networks": {
+                "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
+                "scheduler": None,
+            },
+            "fields": {
+                "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
+                "scheduler": None,
+            },
+        },
+        viewer=ViewerConfig(num_rays_per_chunk=1 << 15, quit_on_train_completion=True),
+        # vis="viewer",
+        vis="tensorboard",           #不进行前端显示
+    )
+    nowMethod.set_output_dir(Path(finalOutputPathHead + projectName))
+    starTrainMethod(nowMethod)
+
+
+    """命令行运行"""
+    # commandString = "python /home/dcy/code/EDREserver/app/scripts/train.py nerfacto " + "--data " + outputPathHead + projectName + " --output-dir " + finalOutputPathHead + projectName + " " + "--viewer.quit-on-train-completion True"
+    # commandString = "python /home/dcy/code/EDREserver/app/scripts/train.py nerfacto " + "--data " + outputPathHead + projectName + " --output-dir " + finalOutputPathHead + projectName + " --vis tensorboard " + "--viewer.quit-on-train-completion True"
+    # os.system(commandString)
+    # p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/train.py nerfacto','--data', outputPathHead + projectName, "--output-dir", finalOutputPathHead + projectName, "--viewer.quit-on-train-completion True"])
+    
+    # print("训练完成")
+    """训练完成后修改数据库"""
+    with app.app_context():
+        proj = ProjectList.query.filter(ProjectList.title==projectName).first()
+        config_path = Path(finalOutputPathHead + projectName + "/nerfacto/" + "config.yml")
+        proj.configPath = str(config_path)
+        proj.state = 2
+        db.session.commit()
+
+
+@api.route('/runColmap', methods=["POST"])
+def runColmap():
+    title = request.form.get("title")
+    # outputPathHead = "./app/data/afterColmap/"
+    proj = ProjectList.query.filter(ProjectList.title==title).first()
+    title = proj.title
+    project_path = proj.projectPath
+    outputPath = proj.colmapPath
+
+    if len(project_path) == 0:
+        return jsonify({'status': 'fail'})
+    thread = threading.Thread(target=colmapthread, args=(project_path, outputPath, title))
+    thread.start()
+    return jsonify({'status': 'success'})
+
+@api.route('/runTrain', methods=["POST"])
+def runTrain():
+    title = request.form.get("title")
+    finalOutputPathHead = "./app/data/afterNerfacto/"
+    # outputPathHead = "./app/data/afterColmap/"
+    proj = ProjectList.query.filter(ProjectList.title==title).first()
+    title = proj.title
+    colmapPath = proj.colmapPath
+
+    if len(colmapPath) == 0:
+        return jsonify({'status': 'fail'})
+    thread = threading.Thread(target=nerfactothread, args=(colmapPath, finalOutputPathHead, title))
+    thread.start()
+    return jsonify({'status': 'success'})
+    
