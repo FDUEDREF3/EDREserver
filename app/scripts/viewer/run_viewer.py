@@ -12,6 +12,7 @@ import tyro
 from rich.console import Console
 import sys
 sys.path.append("/home/dcy/code/EDREserver/app")
+
 from nerfstudio.configs.base_config import ViewerConfig
 from nerfstudio.engine.trainer import TrainerConfig
 from nerfstudio.pipelines.base_pipeline import Pipeline

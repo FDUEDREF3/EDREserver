@@ -27,6 +27,9 @@ import yaml
 from rich.console import Console
 from typing_extensions import Literal
 
+import sys
+sys.path.append("/home/dcy/code/EDREserver/app")
+
 from nerfstudio.engine.trainer import TrainerConfig
 from nerfstudio.pipelines.base_pipeline import Pipeline
 

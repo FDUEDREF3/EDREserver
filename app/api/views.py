@@ -18,20 +18,22 @@ from multiprocessing import context
 import subprocess
 
 
-from app.nerfstudio.process_data.video_to_nerfstudio_dataset import VideoToNerfstudioDataset 
-from app.nerfstudio.process_data.images_to_nerstudio_dataset import ImagesToNerfstudioDataset
-from app.scripts.train import main as starTrainMethod
-from app.nerfstudio.engine.trainer import TrainerConfig
-from app.nerfstudio.pipelines.base_pipeline import VanillaPipelineConfig
-from app.nerfstudio.data.datamanagers.base_datamanager import VanillaDataManagerConfig
-from app.nerfstudio.data.dataparsers.nerfstudio_dataparser import NerfstudioDataParserConfig
-from app.nerfstudio.models.nerfacto import NerfactoModelConfig
-from app.nerfstudio.cameras.camera_optimizers import CameraOptimizerConfig
-from app.nerfstudio.engine.optimizers import AdamOptimizerConfig
-from app.nerfstudio.configs.base_config import ViewerConfig
-from app.scripts.viewer.run_viewer import RunViewer
+from nerfstudio.process_data.video_to_nerfstudio_dataset import VideoToNerfstudioDataset 
+from nerfstudio.process_data.images_to_nerstudio_dataset import ImagesToNerfstudioDataset
+from scripts.train import main as starTrainMethod
+
+from nerfstudio.pipelines.base_pipeline import VanillaPipelineConfig
+from nerfstudio.data.datamanagers.base_datamanager import VanillaDataManagerConfig
+from nerfstudio.data.dataparsers.nerfstudio_dataparser import NerfstudioDataParserConfig
+from nerfstudio.models.nerfacto import NerfactoModelConfig
+from nerfstudio.cameras.camera_optimizers import CameraOptimizerConfig
+from nerfstudio.engine.optimizers import AdamOptimizerConfig
+from nerfstudio.configs.base_config import ViewerConfig
+from scripts.viewer.run_viewer import RunViewer
 from concurrent.futures import ThreadPoolExecutor
 import time
+
+from nerfstudio.engine.trainer import TrainerConfig
 
 
 api = Blueprint('api', __name__)
@@ -182,9 +184,9 @@ def startTrain():
     avatarPath = avatarPathHead + projectName + Path(avatar.filename).suffix
     avatar.save(avatarPath)
 
-    # projectList = ProjectList(title=projectName, avatarImgPath=avatarPath, projectPath=imagePathHead+projectName, imgNum=len(images), createTime=dateTimeObj.date(), state=state, configPath=str(''))
-    # db.session.add(projectList)
-    # db.session.commit()
+    projectList = ProjectList(title=projectName, avatarImgPath=avatarPath, projectPath=imagePathHead+projectName, imgNum=len(images), createTime=dateTimeObj.date(), state=state, configPath=str(''), colmapPath=outputPathHead+projectName)
+    db.session.add(projectList)
+    db.session.commit()
 
     # process = Process(target=trainthread, args=(imagePathHead, outputPathHead, finalOutputPathHead, projectName))
     # process.start()
@@ -245,6 +247,7 @@ def startViewer():
     #                      stderr = subprocess.PIPE,
     #                      universal_newlines=True,
     #                      shell=True)
+    print(config_path)
     p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path])
     processDict[title] = p
     time.sleep(5)
