@@ -41,6 +41,7 @@ api = Blueprint('api', __name__)
 
 """临时用"""
 processDict = {}
+availPort = {'7007':'','7008':''}
 
 
 @api.route('/h',methods=["GET"])  # 使用app提供的route装饰器 对函数进行装饰 即可成为视图函数
@@ -79,7 +80,10 @@ def addData():
 
 @api.route('/getAllProjects', methods=["get"])   #获取所有项目
 def getAllProjects():
-    projectList = ProjectList.query.all()
+    try:
+        projectList = ProjectList.query.all()
+    except:
+        return jsonify({'status': 'fail', 'message':'database error'})
     reProjectList = []
     for proj in projectList:
         with open(proj.avatarImgPath, 'rb') as file:
@@ -161,13 +165,17 @@ def trainthread(imagePathHead, outputPathHead, finalOutputPathHead, projectName)
 
 @api.route('/startTrain', methods=["POST"])  # 测试向数据库中添加数据
 def startTrain():
-    trainData = request.form
-    projectName = trainData.get("title")
-    images = request.files.getlist("imageFiles")
-    avatar = request.files.get("avatar")
-    dateTimeString = trainData.get("datetime")
-    formatString = '%Y-%m-%d' 
-    dateTimeObj = datetime.strptime(dateTimeString, formatString)
+    try:
+        trainData = request.form
+        projectName = trainData.get("title")
+        images = request.files.getlist("imageFiles")
+        avatar = request.files.get("avatar")
+        dateTimeString = trainData.get("datetime")
+        formatString = '%Y-%m-%d' 
+        dateTimeObj = datetime.strptime(dateTimeString, formatString)
+    except:
+        return jsonify({'status': 'fail', 'message':'parameters error'})
+    
 
     state = 0   #0，1，2分别代表colmap中，训练中，训练结束
 
@@ -175,6 +183,15 @@ def startTrain():
     outputPathHead = "./app/data/afterColmap/"
     finalOutputPathHead = "./app/data/afterNerfacto/"
     avatarPathHead = "./app/data/avatar/"
+    if not os.path.exists(imagePathHead):
+        os.mkdir(imagePathHead)
+    if not os.path.exists(outputPathHead):
+        os.mkdir(outputPathHead)
+    if not os.path.exists(finalOutputPathHead):
+        os.mkdir(finalOutputPathHead)
+    if not os.path.exists(avatarPathHead):
+        os.mkdir(avatarPathHead)
+
     if not os.path.exists(imagePathHead + projectName + '/'):
         os.mkdir(imagePathHead + projectName + '/')
     for imgs in images:
@@ -183,10 +200,13 @@ def startTrain():
 
     avatarPath = avatarPathHead + projectName + Path(avatar.filename).suffix
     avatar.save(avatarPath)
-
-    projectList = ProjectList(title=projectName, avatarImgPath=avatarPath, projectPath=imagePathHead+projectName, imgNum=len(images), createTime=dateTimeObj.date(), state=state, configPath=str(''), colmapPath=outputPathHead+projectName)
-    db.session.add(projectList)
-    db.session.commit()
+    
+    try:
+        projectList = ProjectList(title=projectName, avatarImgPath=avatarPath, projectPath=imagePathHead+projectName, imgNum=len(images), createTime=dateTimeObj.date(), state=state, configPath=str(''), colmapPath=outputPathHead+projectName)
+        db.session.add(projectList)
+        db.session.commit()
+    except:
+        return jsonify({'status': 'fail', 'message':'database error'})
 
     # process = Process(target=trainthread, args=(imagePathHead, outputPathHead, finalOutputPathHead, projectName))
     # process.start()
@@ -231,13 +251,33 @@ def startTrain():
 @api.route('/viewer', methods=["POST"])  # 测试向数据库中添加数据
 def startViewer():
     # title = request.args["title"]
-    title = request.form.get("title")
-    proj = ProjectList.query.filter(ProjectList.title==title).first()
-    config_path = proj.configPath
+
+    try:
+        title = request.form.get("title")
+    except:
+        return jsonify({'status': 'fail', 'message':'parameters error'})
+    try:
+        proj = ProjectList.query.filter(ProjectList.title==title).first()
+        config_path = proj.configPath
+    except:
+        return jsonify({'status': 'fail', 'message':'database error'})
     if len(config_path) == 0:
-        return jsonify({'status': 'fail'})
+        return jsonify({'status': 'fail', 'message':'empty data'})
     address = "10.177.35.76"
-    port = "7007"
+    port = ''
+    """限制端口"""
+
+    if title in processDict:
+        return jsonify({'status': 'fail', 'message':'websocket already in use'})
+    if len(processDict)>=2:
+        return jsonify({'status': 'fail', 'message':'full process'})
+    if availPort['7007'] == '':
+        port = '7007'
+    else:
+        if availPort['7008'] == '':
+            port = '7008'
+    availPort[port] = title
+
     """异步调用"""
     # process = Process(target=viewerthread, args=(config_path,))
     # process.start()
@@ -247,10 +287,13 @@ def startViewer():
     #                      stderr = subprocess.PIPE,
     #                      universal_newlines=True,
     #                      shell=True)
-    print(config_path)
-    p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path])
+    # print(config_path)
+    p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path,'--viewer.websocket-port',port])
+
+
+    """限制端口"""
     processDict[title] = p
-    time.sleep(5)
+    # time.sleep(5)
     # commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
     # os.system(commandString)
     # runViewer = RunViewer(Path(config_path))
@@ -267,10 +310,22 @@ def startViewer():
 @api.route('/viewerClose', methods=["POST"])  
 def stopViewer():
     # title = request.args["title"]
-    title = request.form.get("title")
-    p = processDict.pop(title)
-    p.kill()
+    try:
+        title = request.form.get("title")
+    except: 
+        return jsonify({'status': 'fail', 'message':'parameters error'})
+    try:
+        p = processDict.pop(title)
+        p.kill()
+        for po in availPort.keys():
+            if(availPort[po] == title):
+                availPort[po] = ''
+                
+    except:
+        return jsonify({'status': 'fail', 'message':'can not kill process: ' + str(title)})
     return jsonify({'status': 'success'})
+
+
 
 @api.route('/createProject', methods=["POST"])
 def createProject():
