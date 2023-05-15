@@ -41,6 +41,7 @@ api = Blueprint('api', __name__)
 
 """临时用"""
 processDict = {}
+availPort = {'7007':'','7008':''}
 
 
 @api.route('/h',methods=["GET"])  # 使用app提供的route装饰器 对函数进行装饰 即可成为视图函数
@@ -263,7 +264,20 @@ def startViewer():
     if len(config_path) == 0:
         return jsonify({'status': 'fail', 'message':'empty data'})
     address = "10.177.35.76"
-    port = "7007"
+    port = ''
+    """限制端口"""
+
+    if title in processDict:
+        return jsonify({'status': 'fail', 'message':'websocket already in use'})
+    if len(processDict)>=2:
+        return jsonify({'status': 'fail', 'message':'full process'})
+    if availPort['7007'] == '':
+        port = '7007'
+    else:
+        if availPort['7008'] == '':
+            port = '7008'
+    availPort[port] = title
+
     """异步调用"""
     # process = Process(target=viewerthread, args=(config_path,))
     # process.start()
@@ -274,7 +288,10 @@ def startViewer():
     #                      universal_newlines=True,
     #                      shell=True)
     # print(config_path)
-    p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path])
+    p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path,'--viewer.websocket-port',port])
+
+
+    """限制端口"""
     processDict[title] = p
     # time.sleep(5)
     # commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
@@ -300,6 +317,10 @@ def stopViewer():
     try:
         p = processDict.pop(title)
         p.kill()
+        for po in availPort.keys():
+            if(availPort[po] == title):
+                availPort[po] = ''
+                
     except:
         return jsonify({'status': 'fail', 'message':'can not kill process: ' + str(title)})
     return jsonify({'status': 'success'})
