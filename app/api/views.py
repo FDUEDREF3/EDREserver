@@ -18,22 +18,22 @@ from multiprocessing import context
 import subprocess
 
 
-from nerfstudio.process_data.video_to_nerfstudio_dataset import VideoToNerfstudioDataset 
-from nerfstudio.process_data.images_to_nerstudio_dataset import ImagesToNerfstudioDataset
-from scripts.train import main as starTrainMethod
+from app.nerfstudio.process_data.video_to_nerfstudio_dataset import VideoToNerfstudioDataset 
+from app.nerfstudio.process_data.images_to_nerstudio_dataset import ImagesToNerfstudioDataset
+from app.scripts.train import main as starTrainMethod
 
-from nerfstudio.pipelines.base_pipeline import VanillaPipelineConfig
-from nerfstudio.data.datamanagers.base_datamanager import VanillaDataManagerConfig
-from nerfstudio.data.dataparsers.nerfstudio_dataparser import NerfstudioDataParserConfig
-from nerfstudio.models.nerfacto import NerfactoModelConfig
-from nerfstudio.cameras.camera_optimizers import CameraOptimizerConfig
-from nerfstudio.engine.optimizers import AdamOptimizerConfig
-from nerfstudio.configs.base_config import ViewerConfig
-from scripts.viewer.run_viewer import RunViewer
+from app.nerfstudio.pipelines.base_pipeline import VanillaPipelineConfig
+from app.nerfstudio.data.datamanagers.base_datamanager import VanillaDataManagerConfig
+from app.nerfstudio.data.dataparsers.nerfstudio_dataparser import NerfstudioDataParserConfig
+from app.nerfstudio.models.nerfacto import NerfactoModelConfig
+from app.nerfstudio.cameras.camera_optimizers import CameraOptimizerConfig
+from app.nerfstudio.engine.optimizers import AdamOptimizerConfig
+from app.nerfstudio.configs.base_config import ViewerConfig
+from app.scripts.viewer.run_viewer import RunViewer
 from concurrent.futures import ThreadPoolExecutor
 import time
 
-from nerfstudio.engine.trainer import TrainerConfig
+from app.nerfstudio.engine.trainer import TrainerConfig
 
 
 api = Blueprint('api', __name__)

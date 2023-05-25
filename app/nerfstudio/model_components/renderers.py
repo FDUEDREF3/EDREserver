@@ -36,9 +36,9 @@ from torch import nn
 from torchtyping import TensorType
 from typing_extensions import Literal
 
-from nerfstudio.cameras.rays import RaySamples
-from nerfstudio.utils import colors
-from nerfstudio.utils.math import components_from_spherical_harmonics, safe_normalize
+from app.nerfstudio.cameras.rays import RaySamples
+from app.nerfstudio.utils import colors
+from app.nerfstudio.utils.math import components_from_spherical_harmonics, safe_normalize
 
 BACKGROUND_COLOR_OVERRIDE: Optional[TensorType[3]] = None
 

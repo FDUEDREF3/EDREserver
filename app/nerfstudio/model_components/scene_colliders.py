@@ -22,8 +22,8 @@ import torch
 from torch import nn
 from torchtyping import TensorType
 
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.data.scene_box import SceneBox
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.data.scene_box import SceneBox
 
 
 class SceneCollider(nn.Module):

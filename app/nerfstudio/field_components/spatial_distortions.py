@@ -21,7 +21,7 @@ from functorch import jacrev, vmap
 from torch import nn
 from torchtyping import TensorType
 
-from nerfstudio.utils.math import Gaussians
+from app.nerfstudio.utils.math import Gaussians
 
 
 class SpatialDistortion(nn.Module):

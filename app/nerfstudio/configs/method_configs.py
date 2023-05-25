@@ -22,47 +22,47 @@ from typing import Dict
 
 import tyro
 
-from nerfstudio.cameras.camera_optimizers import CameraOptimizerConfig
-from nerfstudio.configs.base_config import ViewerConfig
-from nerfstudio.data.datamanagers.base_datamanager import VanillaDataManagerConfig
-from nerfstudio.data.datamanagers.depth_datamanager import DepthDataManagerConfig
-from nerfstudio.data.datamanagers.sdf_datamanager import SDFDataManagerConfig
-from nerfstudio.data.datamanagers.semantic_datamanager import SemanticDataManagerConfig
-from nerfstudio.data.dataparsers.blender_dataparser import BlenderDataParserConfig
-from nerfstudio.data.dataparsers.dnerf_dataparser import DNeRFDataParserConfig
-from nerfstudio.data.dataparsers.dycheck_dataparser import DycheckDataParserConfig
-from nerfstudio.data.dataparsers.instant_ngp_dataparser import (
+from app.nerfstudio.cameras.camera_optimizers import CameraOptimizerConfig
+from app.nerfstudio.configs.base_config import ViewerConfig
+from app.nerfstudio.data.datamanagers.base_datamanager import VanillaDataManagerConfig
+from app.nerfstudio.data.datamanagers.depth_datamanager import DepthDataManagerConfig
+from app.nerfstudio.data.datamanagers.sdf_datamanager import SDFDataManagerConfig
+from app.nerfstudio.data.datamanagers.semantic_datamanager import SemanticDataManagerConfig
+from app.nerfstudio.data.dataparsers.blender_dataparser import BlenderDataParserConfig
+from app.nerfstudio.data.dataparsers.dnerf_dataparser import DNeRFDataParserConfig
+from app.nerfstudio.data.dataparsers.dycheck_dataparser import DycheckDataParserConfig
+from app.nerfstudio.data.dataparsers.instant_ngp_dataparser import (
     InstantNGPDataParserConfig,
 )
-from nerfstudio.data.dataparsers.nerfstudio_dataparser import NerfstudioDataParserConfig
-from nerfstudio.data.dataparsers.phototourism_dataparser import (
+from app.nerfstudio.data.dataparsers.nerfstudio_dataparser import NerfstudioDataParserConfig
+from app.nerfstudio.data.dataparsers.phototourism_dataparser import (
     PhototourismDataParserConfig,
 )
-from nerfstudio.data.dataparsers.sdfstudio_dataparser import SDFStudioDataParserConfig
-from nerfstudio.data.dataparsers.sitcoms3d_dataparser import Sitcoms3DDataParserConfig
-from nerfstudio.engine.optimizers import AdamOptimizerConfig, RAdamOptimizerConfig
-from nerfstudio.engine.schedulers import (
+from app.nerfstudio.data.dataparsers.sdfstudio_dataparser import SDFStudioDataParserConfig
+from app.nerfstudio.data.dataparsers.sitcoms3d_dataparser import Sitcoms3DDataParserConfig
+from app.nerfstudio.engine.optimizers import AdamOptimizerConfig, RAdamOptimizerConfig
+from app.nerfstudio.engine.schedulers import (
     CosineDecaySchedulerConfig,
     ExponentialDecaySchedulerConfig,
     MultiStepSchedulerConfig,
 )
-from nerfstudio.engine.trainer import TrainerConfig
-from nerfstudio.field_components.temporal_distortions import TemporalDistortionKind
-from nerfstudio.fields.sdf_field import SDFFieldConfig
-from nerfstudio.models.depth_nerfacto import DepthNerfactoModelConfig
-from nerfstudio.models.instant_ngp import InstantNGPModelConfig
-from nerfstudio.models.mipnerf import MipNerfModel
-from nerfstudio.models.nerfacto import NerfactoModelConfig
-from nerfstudio.models.nerfplayer_nerfacto import NerfplayerNerfactoModelConfig
-from nerfstudio.models.nerfplayer_ngp import NerfplayerNGPModelConfig
-from nerfstudio.models.neus import NeuSModelConfig
-from nerfstudio.models.neus_facto import NeuSFactoModelConfig
-from nerfstudio.models.semantic_nerfw import SemanticNerfWModelConfig
-from nerfstudio.models.tensorf import TensoRFModelConfig
-from nerfstudio.models.vanilla_nerf import NeRFModel, VanillaModelConfig
-from nerfstudio.pipelines.base_pipeline import VanillaPipelineConfig
-from nerfstudio.pipelines.dynamic_batch import DynamicBatchPipelineConfig
-from nerfstudio.plugins.registry import discover_methods
+from app.nerfstudio.engine.trainer import TrainerConfig
+from app.nerfstudio.field_components.temporal_distortions import TemporalDistortionKind
+from app.nerfstudio.fields.sdf_field import SDFFieldConfig
+from app.nerfstudio.models.depth_nerfacto import DepthNerfactoModelConfig
+from app.nerfstudio.models.instant_ngp import InstantNGPModelConfig
+from app.nerfstudio.models.mipnerf import MipNerfModel
+from app.nerfstudio.models.nerfacto import NerfactoModelConfig
+from app.nerfstudio.models.nerfplayer_nerfacto import NerfplayerNerfactoModelConfig
+from app.nerfstudio.models.nerfplayer_ngp import NerfplayerNGPModelConfig
+from app.nerfstudio.models.neus import NeuSModelConfig
+from app.nerfstudio.models.neus_facto import NeuSFactoModelConfig
+from app.nerfstudio.models.semantic_nerfw import SemanticNerfWModelConfig
+from app.nerfstudio.models.tensorf import TensoRFModelConfig
+from app.nerfstudio.models.vanilla_nerf import NeRFModel, VanillaModelConfig
+from app.nerfstudio.pipelines.base_pipeline import VanillaPipelineConfig
+from app.nerfstudio.pipelines.dynamic_batch import DynamicBatchPipelineConfig
+from app.nerfstudio.plugins.registry import discover_methods
 
 method_configs: Dict[str, TrainerConfig] = {}
 descriptions = {

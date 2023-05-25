@@ -38,10 +38,10 @@ from rich.progress import (
 )
 from torchtyping import TensorType
 
-from nerfstudio.cameras.cameras import Cameras
-from nerfstudio.data.datasets.base_dataset import InputDataset
-from nerfstudio.pipelines.base_pipeline import Pipeline, VanillaPipeline
-from nerfstudio.utils.rich_utils import ItersPerSecColumn
+from app.nerfstudio.cameras.cameras import Cameras
+from app.nerfstudio.data.datasets.base_dataset import InputDataset
+from app.nerfstudio.pipelines.base_pipeline import Pipeline, VanillaPipeline
+from app.nerfstudio.utils.rich_utils import ItersPerSecColumn
 
 CONSOLE = Console(width=120)
 

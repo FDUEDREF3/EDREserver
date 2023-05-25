@@ -23,16 +23,16 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
 import torch
 from typing_extensions import Literal, get_args
 
-from nerfstudio.cameras.cameras import Cameras, CameraType
-from nerfstudio.model_components.renderers import background_color_override_context
-from nerfstudio.utils import writer
-from nerfstudio.utils.writer import GLOBAL_BUFFER, EventName, TimeWriter
-from nerfstudio.viewer.server import viewer_utils
-from nerfstudio.viewer.server.utils import get_intrinsics_matrix_and_camera_to_world_h
-from nerfstudio.viewer.viser.messages import CameraMessage
+from app.nerfstudio.cameras.cameras import Cameras, CameraType
+from app.nerfstudio.model_components.renderers import background_color_override_context
+from app.nerfstudio.utils import writer
+from app.nerfstudio.utils.writer import GLOBAL_BUFFER, EventName, TimeWriter
+from app.nerfstudio.viewer.server import viewer_utils
+from app.nerfstudio.viewer.server.utils import get_intrinsics_matrix_and_camera_to_world_h
+from app.nerfstudio.viewer.viser.messages import CameraMessage
 
 if TYPE_CHECKING:
-    from nerfstudio.viewer.server.viewer_state import ViewerState
+    from app.nerfstudio.viewer.server.viewer_state import ViewerState
 
 RenderStates = Literal["low_move", "low_static", "high"]
 RenderActions = Literal["rerender", "move", "static", "step"]

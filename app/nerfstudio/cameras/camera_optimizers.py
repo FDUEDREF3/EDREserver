@@ -28,14 +28,14 @@ from torch import nn
 from torchtyping import TensorType
 from typing_extensions import Literal, assert_never
 
-from nerfstudio.cameras.lie_groups import exp_map_SE3, exp_map_SO3xR3
-from nerfstudio.configs.base_config import InstantiateConfig
-from nerfstudio.engine.optimizers import AdamOptimizerConfig
-from nerfstudio.engine.schedulers import (
+from app.nerfstudio.cameras.lie_groups import exp_map_SE3, exp_map_SO3xR3
+from app.nerfstudio.configs.base_config import InstantiateConfig
+from app.nerfstudio.engine.optimizers import AdamOptimizerConfig
+from app.nerfstudio.engine.schedulers import (
     ExponentialDecaySchedulerConfig,
     SchedulerConfig,
 )
-from nerfstudio.utils import poses as pose_utils
+from app.nerfstudio.utils import poses as pose_utils
 
 
 @dataclass

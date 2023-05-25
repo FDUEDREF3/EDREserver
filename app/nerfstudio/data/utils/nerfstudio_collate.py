@@ -24,7 +24,7 @@ from typing import Callable, Dict, Union
 import torch
 import torch.utils.data
 
-from nerfstudio.cameras.cameras import Cameras
+from app.nerfstudio.cameras.cameras import Cameras
 
 # pylint: disable=implicit-str-concat
 NERFSTUDIO_COLLATE_ERR_MSG_FORMAT = (

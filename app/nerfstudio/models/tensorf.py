@@ -29,31 +29,31 @@ from torchmetrics.functional import structural_similarity_index_measure
 from torchmetrics.image.lpip import LearnedPerceptualImagePatchSimilarity
 from typing_extensions import Literal
 
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.configs.config_utils import to_immutable_dict
-from nerfstudio.engine.callbacks import (
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.configs.config_utils import to_immutable_dict
+from app.nerfstudio.engine.callbacks import (
     TrainingCallback,
     TrainingCallbackAttributes,
     TrainingCallbackLocation,
 )
-from nerfstudio.field_components.encodings import (
+from app.nerfstudio.field_components.encodings import (
     NeRFEncoding,
     TensorCPEncoding,
     TensorVMEncoding,
     TriplaneEncoding,
 )
-from nerfstudio.field_components.field_heads import FieldHeadNames
-from nerfstudio.fields.tensorf_field import TensoRFField
-from nerfstudio.model_components.losses import MSELoss
-from nerfstudio.model_components.ray_samplers import PDFSampler, UniformSampler
-from nerfstudio.model_components.renderers import (
+from app.nerfstudio.field_components.field_heads import FieldHeadNames
+from app.nerfstudio.fields.tensorf_field import TensoRFField
+from app.nerfstudio.model_components.losses import MSELoss
+from app.nerfstudio.model_components.ray_samplers import PDFSampler, UniformSampler
+from app.nerfstudio.model_components.renderers import (
     AccumulationRenderer,
     DepthRenderer,
     RGBRenderer,
 )
-from nerfstudio.model_components.scene_colliders import AABBBoxCollider
-from nerfstudio.models.base_model import Model, ModelConfig
-from nerfstudio.utils import colormaps, colors, misc
+from app.nerfstudio.model_components.scene_colliders import AABBBoxCollider
+from app.nerfstudio.models.base_model import Model, ModelConfig
+from app.nerfstudio.utils import colormaps, colors, misc
 
 
 @dataclass

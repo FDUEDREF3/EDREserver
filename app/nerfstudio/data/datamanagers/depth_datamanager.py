@@ -19,8 +19,8 @@ Depth datamanager.
 from dataclasses import dataclass, field
 from typing import Type
 
-from nerfstudio.data.datamanagers import base_datamanager
-from nerfstudio.data.datasets.depth_dataset import DepthDataset
+from app.nerfstudio.data.datamanagers import base_datamanager
+from app.nerfstudio.data.datasets.depth_dataset import DepthDataset
 
 
 @dataclass

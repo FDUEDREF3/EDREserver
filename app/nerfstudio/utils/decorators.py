@@ -17,7 +17,7 @@ Decorator definitions
 """
 from typing import Callable, List
 
-from nerfstudio.utils import comms
+from app.nerfstudio.utils import comms
 
 
 def decorate_all(decorators: List[Callable]) -> Callable:

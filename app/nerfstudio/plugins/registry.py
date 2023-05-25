@@ -21,8 +21,8 @@ import typing as t
 
 from rich.progress import Console
 
-from nerfstudio.engine.trainer import TrainerConfig
-from nerfstudio.plugins.types import MethodSpecification
+from app.nerfstudio.engine.trainer import TrainerConfig
+from app.nerfstudio.plugins.types import MethodSpecification
 
 if sys.version_info < (3, 10):
     from importlib_metadata import entry_points

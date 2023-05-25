@@ -21,8 +21,8 @@ import torch
 from torch import nn
 from torchtyping import TensorType
 
-from nerfstudio.field_components.encodings import Encoding, NeRFEncoding
-from nerfstudio.field_components.mlp import MLP
+from app.nerfstudio.field_components.encodings import Encoding, NeRFEncoding
+from app.nerfstudio.field_components.mlp import MLP
 
 
 class TemporalDistortion(nn.Module):

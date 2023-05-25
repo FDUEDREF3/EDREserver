@@ -25,16 +25,16 @@ import yaml
 from rich.console import Console
 from typing_extensions import Literal
 
-from nerfstudio.configs.base_config import (
+from app.nerfstudio.configs.base_config import (
     InstantiateConfig,
     LoggingConfig,
     MachineConfig,
     ViewerConfig,
 )
-from nerfstudio.configs.config_utils import to_immutable_dict
-from nerfstudio.engine.optimizers import OptimizerConfig
-from nerfstudio.engine.schedulers import SchedulerConfig
-from nerfstudio.pipelines.base_pipeline import VanillaPipelineConfig
+from app.nerfstudio.configs.config_utils import to_immutable_dict
+from app.nerfstudio.engine.optimizers import OptimizerConfig
+from app.nerfstudio.engine.schedulers import SchedulerConfig
+from app.nerfstudio.pipelines.base_pipeline import VanillaPipelineConfig
 
 CONSOLE = Console(width=120)
 

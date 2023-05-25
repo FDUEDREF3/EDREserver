@@ -31,16 +31,16 @@ from typing_extensions import Literal
 
 # TODO(1480) use pycolmap instead of colmap_parsing_utils
 # import pycolmap
-from nerfstudio.data.utils.colmap_parsing_utils import (
+from app.nerfstudio.data.utils.colmap_parsing_utils import (
     qvec2rotmat,
     read_cameras_binary,
     read_images_binary,
     read_points3D_binary,
 )
-from nerfstudio.process_data.process_data_utils import CameraModel
-from nerfstudio.utils import colormaps
-from nerfstudio.utils.rich_utils import status
-from nerfstudio.utils.scripts import run_command
+from app.nerfstudio.process_data.process_data_utils import CameraModel
+from app.nerfstudio.utils import colormaps
+from app.nerfstudio.utils.rich_utils import status
+from app.nerfstudio.utils.scripts import run_command
 
 CONSOLE = Console(width=120)
 

@@ -20,7 +20,7 @@ import torch
 from matplotlib import cm
 from torchtyping import TensorType
 
-from nerfstudio.utils import colors
+from app.nerfstudio.utils import colors
 
 
 def apply_colormap(image: TensorType["bs":..., 1], cmap="viridis") -> TensorType["bs":..., "rgb":3]:

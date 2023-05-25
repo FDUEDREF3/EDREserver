@@ -26,10 +26,10 @@ import torch
 from torchtyping import TensorType
 from typing_extensions import Literal
 
-import nerfstudio.configs.base_config as cfg
-from nerfstudio.cameras.cameras import Cameras
-from nerfstudio.configs.config_utils import to_immutable_dict
-from nerfstudio.data.scene_box import SceneBox
+import app.nerfstudio.configs.base_config as cfg
+from app.nerfstudio.cameras.cameras import Cameras
+from app.nerfstudio.configs.config_utils import to_immutable_dict
+from app.nerfstudio.data.scene_box import SceneBox
 
 
 @dataclass

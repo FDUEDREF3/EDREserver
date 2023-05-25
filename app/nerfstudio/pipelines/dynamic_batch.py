@@ -22,8 +22,8 @@ from typing import Type
 import torch
 from typing_extensions import Literal
 
-from nerfstudio.data.datamanagers.base_datamanager import VanillaDataManager
-from nerfstudio.pipelines.base_pipeline import VanillaPipeline, VanillaPipelineConfig
+from app.nerfstudio.data.datamanagers.base_datamanager import VanillaDataManager
+from app.nerfstudio.pipelines.base_pipeline import VanillaPipeline, VanillaPipelineConfig
 
 
 @dataclass

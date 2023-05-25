@@ -21,9 +21,9 @@ from typing import List, Tuple
 
 from rich.console import Console
 
-from nerfstudio.process_data import process_data_utils
-from nerfstudio.process_data.process_data_utils import CAMERA_MODELS
-from nerfstudio.utils import io
+from app.nerfstudio.process_data import process_data_utils
+from app.nerfstudio.process_data.process_data_utils import CAMERA_MODELS
+from app.nerfstudio.utils import io
 
 CONSOLE = Console(width=120)
 

@@ -26,7 +26,7 @@ from torch.autograd import Function
 from torch.cuda.amp import custom_bwd, custom_fwd
 from torchtyping import TensorType
 
-import nerfstudio.field_components.cuda as _C
+import app.nerfstudio.field_components.cuda as _C
 
 
 # pylint: disable=abstract-method, arguments-differ

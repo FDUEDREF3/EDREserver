@@ -21,12 +21,12 @@ from typing import Dict, List, Optional, Tuple
 from rich.console import Console
 from typing_extensions import Literal
 
-from nerfstudio.process_data import colmap_utils, hloc_utils, process_data_utils
-from nerfstudio.process_data.base_converter_to_nerfstudio_dataset import (
+from app.nerfstudio.process_data import colmap_utils, hloc_utils, process_data_utils
+from app.nerfstudio.process_data.base_converter_to_nerfstudio_dataset import (
     BaseConverterToNerfstudioDataset,
 )
-from nerfstudio.process_data.process_data_utils import CAMERA_MODELS
-from nerfstudio.utils import install_checks
+from app.nerfstudio.process_data.process_data_utils import CAMERA_MODELS
+from app.nerfstudio.utils import install_checks
 
 CONSOLE = Console(width=120)
 

@@ -30,14 +30,14 @@ import torch
 from rich.console import Console
 from typing_extensions import Literal
 
-from nerfstudio.cameras import camera_utils
-from nerfstudio.cameras.cameras import Cameras, CameraType
-from nerfstudio.data.dataparsers.base_dataparser import (
+from app.nerfstudio.cameras import camera_utils
+from app.nerfstudio.cameras.cameras import Cameras, CameraType
+from app.nerfstudio.data.dataparsers.base_dataparser import (
     DataParser,
     DataParserConfig,
     DataparserOutputs,
 )
-from nerfstudio.data.scene_box import SceneBox
+from app.nerfstudio.data.scene_box import SceneBox
 
 CONSOLE = Console(width=120)
 

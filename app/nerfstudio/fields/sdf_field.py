@@ -28,12 +28,12 @@ from torch.nn.parameter import Parameter
 from torchtyping import TensorType
 from typing_extensions import Literal
 
-from nerfstudio.cameras.rays import RaySamples
-from nerfstudio.field_components.embedding import Embedding
-from nerfstudio.field_components.encodings import NeRFEncoding
-from nerfstudio.field_components.field_heads import FieldHeadNames
-from nerfstudio.field_components.spatial_distortions import SpatialDistortion
-from nerfstudio.fields.base_field import Field, FieldConfig
+from app.nerfstudio.cameras.rays import RaySamples
+from app.nerfstudio.field_components.embedding import Embedding
+from app.nerfstudio.field_components.encodings import NeRFEncoding
+from app.nerfstudio.field_components.field_heads import FieldHeadNames
+from app.nerfstudio.field_components.spatial_distortions import SpatialDistortion
+from app.nerfstudio.fields.base_field import Field, FieldConfig
 
 try:
     import tinycudann as tcnn

@@ -31,23 +31,23 @@ from rich.console import Console
 from torch.cuda.amp.grad_scaler import GradScaler
 from typing_extensions import Literal
 
-from nerfstudio.configs.experiment_config import ExperimentConfig
-from nerfstudio.engine.callbacks import (
+from app.nerfstudio.configs.experiment_config import ExperimentConfig
+from app.nerfstudio.engine.callbacks import (
     TrainingCallback,
     TrainingCallbackAttributes,
     TrainingCallbackLocation,
 )
-from nerfstudio.engine.optimizers import Optimizers
-from nerfstudio.pipelines.base_pipeline import VanillaPipeline
-from nerfstudio.utils import profiler, writer
-from nerfstudio.utils.decorators import (
+from app.nerfstudio.engine.optimizers import Optimizers
+from app.nerfstudio.pipelines.base_pipeline import VanillaPipeline
+from app.nerfstudio.utils import profiler, writer
+from app.nerfstudio.utils.decorators import (
     check_eval_enabled,
     check_main_thread,
     check_viewer_enabled,
 )
-from nerfstudio.utils.misc import step_check
-from nerfstudio.utils.writer import EventName, TimeWriter
-from nerfstudio.viewer.server.viewer_state import ViewerState
+from app.nerfstudio.utils.misc import step_check
+from app.nerfstudio.utils.writer import EventName, TimeWriter
+from app.nerfstudio.viewer.server.viewer_state import ViewerState
 
 CONSOLE = Console(width=120)
 

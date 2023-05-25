@@ -26,7 +26,7 @@ from typing import Any, List, Optional, Tuple, Type
 from typing_extensions import Literal
 
 # model instances
-from nerfstudio.utils import writer
+from app.nerfstudio.utils import writer
 
 warnings.filterwarnings("ignore", module="torchvision")
 

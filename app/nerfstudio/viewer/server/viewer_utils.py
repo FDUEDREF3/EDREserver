@@ -27,14 +27,14 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
 import torch
 from rich.console import Console
 
-from nerfstudio.data.scene_box import SceneBox
-from nerfstudio.models.base_model import Model
-from nerfstudio.utils import colormaps
-from nerfstudio.utils.io import load_from_json
-from nerfstudio.viewer.server.control_panel import ControlPanel
+from app.nerfstudio.data.scene_box import SceneBox
+from app.nerfstudio.models.base_model import Model
+from app.nerfstudio.utils import colormaps
+from app.nerfstudio.utils.io import load_from_json
+from app.nerfstudio.viewer.server.control_panel import ControlPanel
 
 if TYPE_CHECKING:
-    from nerfstudio.engine.trainer import Trainer
+    from app.nerfstudio.engine.trainer import Trainer
 
 CONSOLE = Console(width=120)
 

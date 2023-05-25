@@ -18,9 +18,9 @@ Depth dataset.
 
 from typing import Dict
 
-from nerfstudio.data.dataparsers.base_dataparser import DataparserOutputs
-from nerfstudio.data.datasets.base_dataset import InputDataset
-from nerfstudio.data.utils.data_utils import get_depth_image_from_path
+from app.nerfstudio.data.dataparsers.base_dataparser import DataparserOutputs
+from app.nerfstudio.data.datasets.base_dataset import InputDataset
+from app.nerfstudio.data.utils.data_utils import get_depth_image_from_path
 
 
 class DepthDataset(InputDataset):

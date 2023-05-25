@@ -28,30 +28,30 @@ from torchmetrics import PeakSignalNoiseRatio
 from torchmetrics.functional import structural_similarity_index_measure
 from torchmetrics.image.lpip import LearnedPerceptualImagePatchSimilarity
 
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.data.dataparsers.base_dataparser import Semantics
-from nerfstudio.engine.callbacks import (
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.data.dataparsers.base_dataparser import Semantics
+from app.nerfstudio.engine.callbacks import (
     TrainingCallback,
     TrainingCallbackAttributes,
     TrainingCallbackLocation,
 )
-from nerfstudio.field_components.field_heads import FieldHeadNames
-from nerfstudio.field_components.spatial_distortions import SceneContraction
-from nerfstudio.fields.density_fields import HashMLPDensityField
-from nerfstudio.fields.nerfacto_field import TCNNNerfactoField
-from nerfstudio.model_components.losses import MSELoss, distortion_loss, interlevel_loss
-from nerfstudio.model_components.ray_samplers import ProposalNetworkSampler
-from nerfstudio.model_components.renderers import (
+from app.nerfstudio.field_components.field_heads import FieldHeadNames
+from app.nerfstudio.field_components.spatial_distortions import SceneContraction
+from app.nerfstudio.fields.density_fields import HashMLPDensityField
+from app.nerfstudio.fields.nerfacto_field import TCNNNerfactoField
+from app.nerfstudio.model_components.losses import MSELoss, distortion_loss, interlevel_loss
+from app.nerfstudio.model_components.ray_samplers import ProposalNetworkSampler
+from app.nerfstudio.model_components.renderers import (
     AccumulationRenderer,
     DepthRenderer,
     RGBRenderer,
     SemanticRenderer,
     UncertaintyRenderer,
 )
-from nerfstudio.model_components.scene_colliders import NearFarCollider
-from nerfstudio.models.base_model import Model
-from nerfstudio.models.nerfacto import NerfactoModelConfig
-from nerfstudio.utils import colormaps
+from app.nerfstudio.model_components.scene_colliders import NearFarCollider
+from app.nerfstudio.models.base_model import Model
+from app.nerfstudio.models.nerfacto import NerfactoModelConfig
+from app.nerfstudio.utils import colormaps
 
 
 @dataclass

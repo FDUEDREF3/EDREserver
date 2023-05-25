@@ -29,24 +29,24 @@ from torchmetrics.functional import structural_similarity_index_measure
 from torchmetrics.image.lpip import LearnedPerceptualImagePatchSimilarity
 from typing_extensions import Literal
 
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.engine.callbacks import (
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.engine.callbacks import (
     TrainingCallback,
     TrainingCallbackAttributes,
     TrainingCallbackLocation,
 )
-from nerfstudio.field_components.field_heads import FieldHeadNames
-from nerfstudio.field_components.spatial_distortions import SceneContraction
-from nerfstudio.fields.nerfacto_field import TCNNNerfactoField
-from nerfstudio.model_components.losses import MSELoss
-from nerfstudio.model_components.ray_samplers import VolumetricSampler
-from nerfstudio.model_components.renderers import (
+from app.nerfstudio.field_components.field_heads import FieldHeadNames
+from app.nerfstudio.field_components.spatial_distortions import SceneContraction
+from app.nerfstudio.fields.nerfacto_field import TCNNNerfactoField
+from app.nerfstudio.model_components.losses import MSELoss
+from app.nerfstudio.model_components.ray_samplers import VolumetricSampler
+from app.nerfstudio.model_components.renderers import (
     AccumulationRenderer,
     DepthRenderer,
     RGBRenderer,
 )
-from nerfstudio.models.base_model import Model, ModelConfig
-from nerfstudio.utils import colormaps
+from app.nerfstudio.models.base_model import Model, ModelConfig
+from app.nerfstudio.utils import colormaps
 
 
 @dataclass

@@ -25,12 +25,12 @@ from torch import nn
 from torch.nn.parameter import Parameter
 from torchtyping import TensorType
 
-from nerfstudio.cameras.rays import RaySamples
-from nerfstudio.data.scene_box import SceneBox
-from nerfstudio.field_components.activations import trunc_exp
-from nerfstudio.field_components.embedding import Embedding
-from nerfstudio.field_components.encodings import Encoding, HashEncoding, SHEncoding
-from nerfstudio.field_components.field_heads import (
+from app.nerfstudio.cameras.rays import RaySamples
+from app.nerfstudio.data.scene_box import SceneBox
+from app.nerfstudio.field_components.activations import trunc_exp
+from app.nerfstudio.field_components.embedding import Embedding
+from app.nerfstudio.field_components.encodings import Encoding, HashEncoding, SHEncoding
+from app.nerfstudio.field_components.field_heads import (
     DensityFieldHead,
     FieldHead,
     FieldHeadNames,
@@ -41,12 +41,12 @@ from nerfstudio.field_components.field_heads import (
     TransientRGBFieldHead,
     UncertaintyFieldHead,
 )
-from nerfstudio.field_components.mlp import MLP
-from nerfstudio.field_components.spatial_distortions import (
+from app.nerfstudio.field_components.mlp import MLP
+from app.nerfstudio.field_components.spatial_distortions import (
     SceneContraction,
     SpatialDistortion,
 )
-from nerfstudio.fields.base_field import Field, shift_directions_for_tcnn
+from app.nerfstudio.fields.base_field import Field, shift_directions_for_tcnn
 
 try:
     import tinycudann as tcnn

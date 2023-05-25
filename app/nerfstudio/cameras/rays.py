@@ -22,8 +22,8 @@ from typing import Callable, Dict, Optional, Tuple, Union
 import torch
 from torchtyping import TensorType
 
-from nerfstudio.utils.math import Gaussians, conical_frustum_to_gaussian
-from nerfstudio.utils.tensor_dataclass import TensorDataclass
+from app.nerfstudio.utils.math import Gaussians, conical_frustum_to_gaussian
+from app.nerfstudio.utils.tensor_dataclass import TensorDataclass
 
 TORCH_DEVICE = Union[str, torch.device]  # pylint: disable=invalid-name
 

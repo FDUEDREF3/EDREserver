@@ -20,8 +20,8 @@ from pathlib import Path
 
 from rich.console import Console
 
-from nerfstudio.process_data import equirect_utils, process_data_utils
-from nerfstudio.process_data.colmap_converter_to_nerfstudio_dataset import (
+from app.nerfstudio.process_data import equirect_utils, process_data_utils
+from app.nerfstudio.process_data.colmap_converter_to_nerfstudio_dataset import (
     ColmapConverterToNerfstudioDataset,
 )
 

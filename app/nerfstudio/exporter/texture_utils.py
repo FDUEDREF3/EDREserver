@@ -32,10 +32,10 @@ from rich.console import Console
 from torchtyping import TensorType
 from typing_extensions import Literal
 
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.exporter.exporter_utils import Mesh
-from nerfstudio.pipelines.base_pipeline import Pipeline
-from nerfstudio.utils.rich_utils import get_progress
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.exporter.exporter_utils import Mesh
+from app.nerfstudio.pipelines.base_pipeline import Pipeline
+from app.nerfstudio.utils.rich_utils import get_progress
 
 CONSOLE = Console(width=120)
 

@@ -23,15 +23,15 @@ import imageio
 import numpy as np
 import torch
 
-from nerfstudio.cameras.cameras import Cameras, CameraType
-from nerfstudio.data.dataparsers.base_dataparser import (
+from app.nerfstudio.cameras.cameras import Cameras, CameraType
+from app.nerfstudio.data.dataparsers.base_dataparser import (
     DataParser,
     DataParserConfig,
     DataparserOutputs,
 )
-from nerfstudio.data.scene_box import SceneBox
-from nerfstudio.utils.colors import get_color
-from nerfstudio.utils.io import load_from_json
+from app.nerfstudio.data.scene_box import SceneBox
+from app.nerfstudio.utils.colors import get_color
+from app.nerfstudio.utils.io import load_from_json
 
 
 @dataclass

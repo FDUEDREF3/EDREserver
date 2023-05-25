@@ -19,8 +19,8 @@ SDF datamanager.
 from dataclasses import dataclass, field
 from typing import Type
 
-from nerfstudio.data.datamanagers import base_datamanager
-from nerfstudio.data.datasets.sdf_dataset import SDFDataset
+from app.nerfstudio.data.datamanagers import base_datamanager
+from app.nerfstudio.data.datasets.sdf_dataset import SDFDataset
 
 
 @dataclass

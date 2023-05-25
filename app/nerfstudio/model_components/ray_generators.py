@@ -18,9 +18,9 @@ Ray generator.
 from torch import nn
 from torchtyping import TensorType
 
-from nerfstudio.cameras.camera_optimizers import CameraOptimizer
-from nerfstudio.cameras.cameras import Cameras
-from nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.cameras.camera_optimizers import CameraOptimizer
+from app.nerfstudio.cameras.cameras import Cameras
+from app.nerfstudio.cameras.rays import RayBundle
 
 
 class RayGenerator(nn.Module):
