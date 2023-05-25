@@ -466,3 +466,17 @@ def runTrain():
     thread.start()
     return jsonify({'status': 'success'})
     
+@api.route('/runColmapAndTrain', methods=["POST"])
+def runColmapAndTrain():
+    title = request.form.get("title")
+    # outputPathHead = "./app/data/afterColmap/"
+    proj = ProjectList.query.filter(ProjectList.title==title).first()
+    title = proj.title
+    project_path = proj.projectPath
+    outputPath = proj.colmapPath
+
+    if len(project_path) == 0:
+        return jsonify({'status': 'fail'})
+    thread = threading.Thread(target=colmapthread, args=(project_path, outputPath, title))
+    thread.start()
+    return jsonify({'status': 'success'})
