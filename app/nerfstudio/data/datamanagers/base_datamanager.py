@@ -32,45 +32,45 @@ from torch.utils.data import Dataset
 from torch.utils.data.distributed import DistributedSampler
 from typing_extensions import Literal
 
-from nerfstudio.cameras.camera_optimizers import CameraOptimizerConfig
-from nerfstudio.cameras.cameras import CameraType
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.configs.base_config import InstantiateConfig
-from nerfstudio.data.dataparsers.arkitscenes_dataparser import (
+from app.nerfstudio.cameras.camera_optimizers import CameraOptimizerConfig
+from app.nerfstudio.cameras.cameras import CameraType
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.configs.base_config import InstantiateConfig
+from app.nerfstudio.data.dataparsers.arkitscenes_dataparser import (
     ARKitScenesDataParserConfig,
 )
-from nerfstudio.data.dataparsers.base_dataparser import DataparserOutputs
-from nerfstudio.data.dataparsers.blender_dataparser import BlenderDataParserConfig
-from nerfstudio.data.dataparsers.dnerf_dataparser import DNeRFDataParserConfig
-from nerfstudio.data.dataparsers.dycheck_dataparser import DycheckDataParserConfig
-from nerfstudio.data.dataparsers.instant_ngp_dataparser import (
+from app.nerfstudio.data.dataparsers.base_dataparser import DataparserOutputs
+from app.nerfstudio.data.dataparsers.blender_dataparser import BlenderDataParserConfig
+from app.nerfstudio.data.dataparsers.dnerf_dataparser import DNeRFDataParserConfig
+from app.nerfstudio.data.dataparsers.dycheck_dataparser import DycheckDataParserConfig
+from app.nerfstudio.data.dataparsers.instant_ngp_dataparser import (
     InstantNGPDataParserConfig,
 )
-from nerfstudio.data.dataparsers.minimal_dataparser import MinimalDataParserConfig
-from nerfstudio.data.dataparsers.nerfosr_dataparser import NeRFOSRDataParserConfig
-from nerfstudio.data.dataparsers.nerfstudio_dataparser import NerfstudioDataParserConfig
-from nerfstudio.data.dataparsers.nuscenes_dataparser import NuScenesDataParserConfig
-from nerfstudio.data.dataparsers.phototourism_dataparser import (
+from app.nerfstudio.data.dataparsers.minimal_dataparser import MinimalDataParserConfig
+from app.nerfstudio.data.dataparsers.nerfosr_dataparser import NeRFOSRDataParserConfig
+from app.nerfstudio.data.dataparsers.nerfstudio_dataparser import NerfstudioDataParserConfig
+from app.nerfstudio.data.dataparsers.nuscenes_dataparser import NuScenesDataParserConfig
+from app.nerfstudio.data.dataparsers.phototourism_dataparser import (
     PhototourismDataParserConfig,
 )
-from nerfstudio.data.dataparsers.scannet_dataparser import ScanNetDataParserConfig
-from nerfstudio.data.dataparsers.sdfstudio_dataparser import SDFStudioDataParserConfig
-from nerfstudio.data.dataparsers.sitcoms3d_dataparser import Sitcoms3DDataParserConfig
-from nerfstudio.data.datasets.base_dataset import InputDataset
-from nerfstudio.data.pixel_samplers import (
+from app.nerfstudio.data.dataparsers.scannet_dataparser import ScanNetDataParserConfig
+from app.nerfstudio.data.dataparsers.sdfstudio_dataparser import SDFStudioDataParserConfig
+from app.nerfstudio.data.dataparsers.sitcoms3d_dataparser import Sitcoms3DDataParserConfig
+from app.nerfstudio.data.datasets.base_dataset import InputDataset
+from app.nerfstudio.data.pixel_samplers import (
     EquirectangularPixelSampler,
     PatchPixelSampler,
     PixelSampler,
 )
-from nerfstudio.data.utils.dataloaders import (
+from app.nerfstudio.data.utils.dataloaders import (
     CacheDataloader,
     FixedIndicesEvalDataloader,
     RandIndicesEvalDataloader,
 )
-from nerfstudio.data.utils.nerfstudio_collate import nerfstudio_collate
-from nerfstudio.engine.callbacks import TrainingCallback, TrainingCallbackAttributes
-from nerfstudio.model_components.ray_generators import RayGenerator
-from nerfstudio.utils.misc import IterableWrapper
+from app.nerfstudio.data.utils.nerfstudio_collate import nerfstudio_collate
+from app.nerfstudio.engine.callbacks import TrainingCallback, TrainingCallbackAttributes
+from app.nerfstudio.model_components.ray_generators import RayGenerator
+from app.nerfstudio.utils.misc import IterableWrapper
 
 CONSOLE = Console(width=120)
 

@@ -22,8 +22,8 @@ import numpy as np
 from rich.console import Console
 from scipy.spatial.transform import Rotation
 
-from nerfstudio.process_data.process_data_utils import CAMERA_MODELS
-from nerfstudio.utils import io
+from app.nerfstudio.process_data.process_data_utils import CAMERA_MODELS
+from app.nerfstudio.utils import io
 
 CONSOLE = Console(width=120)
 

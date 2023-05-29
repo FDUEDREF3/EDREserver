@@ -37,16 +37,16 @@ from torch.nn import Parameter
 from torch.nn.parallel import DistributedDataParallel as DDP
 from typing_extensions import Literal
 
-from nerfstudio.configs import base_config as cfg
-from nerfstudio.data.datamanagers.base_datamanager import (
+from app.nerfstudio.configs import base_config as cfg
+from app.nerfstudio.data.datamanagers.base_datamanager import (
     DataManager,
     DataManagerConfig,
     VanillaDataManager,
     VanillaDataManagerConfig,
 )
-from nerfstudio.engine.callbacks import TrainingCallback, TrainingCallbackAttributes
-from nerfstudio.models.base_model import Model, ModelConfig
-from nerfstudio.utils import profiler
+from app.nerfstudio.engine.callbacks import TrainingCallback, TrainingCallbackAttributes
+from app.nerfstudio.models.base_model import Model, ModelConfig
+from app.nerfstudio.utils import profiler
 
 
 def module_wrapper(ddp_or_model: Union[DDP, Model]) -> Model:

@@ -30,9 +30,9 @@ from rich.console import Console
 from torch.utils.tensorboard import SummaryWriter
 from torchtyping import TensorType
 
-from nerfstudio.configs import base_config as cfg
-from nerfstudio.utils.decorators import check_main_thread, decorate_all
-from nerfstudio.utils.printing import human_format
+from app.nerfstudio.configs import base_config as cfg
+from app.nerfstudio.utils.decorators import check_main_thread, decorate_all
+from app.nerfstudio.utils.printing import human_format
 
 CONSOLE = Console(width=120)
 to8b = lambda x: (255 * torch.clamp(x, min=0, max=1)).to(torch.uint8)

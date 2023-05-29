@@ -28,13 +28,13 @@ import torchvision
 from torch.nn import Parameter
 from torchtyping import TensorType
 
-import nerfstudio.utils.math
-import nerfstudio.utils.poses as pose_utils
-from nerfstudio.cameras import camera_utils
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.data.scene_box import SceneBox
-from nerfstudio.utils.misc import strtobool
-from nerfstudio.utils.tensor_dataclass import TensorDataclass
+import app.nerfstudio.utils.math
+import app.nerfstudio.utils.poses as pose_utils
+from app.nerfstudio.cameras import camera_utils
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.data.scene_box import SceneBox
+from app.nerfstudio.utils.misc import strtobool
+from app.nerfstudio.utils.tensor_dataclass import TensorDataclass
 
 TORCH_DEVICE = Union[torch.device, str]  # pylint: disable=invalid-name
 

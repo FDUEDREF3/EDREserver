@@ -30,8 +30,8 @@ from typing_extensions import Literal
 import sys
 sys.path.append("/home/dcy/code/EDREserver/app")
 
-from nerfstudio.engine.trainer import TrainerConfig
-from nerfstudio.pipelines.base_pipeline import Pipeline
+from app.nerfstudio.engine.trainer import TrainerConfig
+from app.nerfstudio.pipelines.base_pipeline import Pipeline
 
 CONSOLE = Console(width=120)
 

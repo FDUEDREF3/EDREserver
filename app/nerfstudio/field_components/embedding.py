@@ -20,7 +20,7 @@ Code for embeddings.
 import torch
 from torchtyping import TensorType
 
-from nerfstudio.field_components.base_field_component import FieldComponent
+from app.nerfstudio.field_components.base_field_component import FieldComponent
 
 
 class Embedding(FieldComponent):

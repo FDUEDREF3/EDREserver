@@ -17,7 +17,7 @@ This package contains specifications used to register plugins.
 """
 from dataclasses import dataclass
 
-from nerfstudio.engine.trainer import TrainerConfig
+from app.nerfstudio.engine.trainer import TrainerConfig
 
 
 @dataclass

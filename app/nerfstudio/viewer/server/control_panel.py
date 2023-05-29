@@ -18,8 +18,8 @@ from typing import Callable, DefaultDict, List, Tuple
 
 import torch
 
-from nerfstudio.viewer.server import viewer_utils
-from nerfstudio.viewer.server.viewer_elements import (
+from app.nerfstudio.viewer.server import viewer_utils
+from app.nerfstudio.viewer.server.viewer_elements import (
     ViewerCheckbox,
     ViewerDropdown,
     ViewerElement,
@@ -28,7 +28,7 @@ from nerfstudio.viewer.server.viewer_elements import (
     ViewerSlider,
     ViewerVec3,
 )
-from nerfstudio.viewer.viser import ViserServer
+from app.nerfstudio.viewer.viser import ViserServer
 
 
 class ControlPanel:

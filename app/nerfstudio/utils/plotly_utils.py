@@ -30,9 +30,9 @@ import torch.nn.functional as F
 from plotly import express as ex
 from torchtyping import TensorType
 
-from nerfstudio.cameras.cameras import Cameras
-from nerfstudio.cameras.rays import Frustums, RayBundle
-from nerfstudio.utils.math import Gaussians
+from app.nerfstudio.cameras.cameras import Cameras
+from app.nerfstudio.cameras.rays import Frustums, RayBundle
+from app.nerfstudio.utils.math import Gaussians
 
 
 def color_str(color):

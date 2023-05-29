@@ -28,8 +28,8 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchtyping import TensorType
 
-from nerfstudio.data.dataparsers.base_dataparser import DataparserOutputs
-from nerfstudio.data.utils.data_utils import get_image_mask_tensor_from_path
+from app.nerfstudio.data.dataparsers.base_dataparser import DataparserOutputs
+from app.nerfstudio.data.utils.data_utils import get_image_mask_tensor_from_path
 
 
 class InputDataset(Dataset):

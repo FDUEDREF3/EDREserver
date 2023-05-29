@@ -25,19 +25,19 @@ from torchmetrics import PeakSignalNoiseRatio
 from torchmetrics.functional import structural_similarity_index_measure
 from torchmetrics.image.lpip import LearnedPerceptualImagePatchSimilarity
 
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.field_components.encodings import NeRFEncoding
-from nerfstudio.field_components.field_heads import FieldHeadNames
-from nerfstudio.fields.vanilla_nerf_field import NeRFField
-from nerfstudio.model_components.losses import MSELoss
-from nerfstudio.model_components.ray_samplers import PDFSampler, UniformSampler
-from nerfstudio.model_components.renderers import (
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.field_components.encodings import NeRFEncoding
+from app.nerfstudio.field_components.field_heads import FieldHeadNames
+from app.nerfstudio.fields.vanilla_nerf_field import NeRFField
+from app.nerfstudio.model_components.losses import MSELoss
+from app.nerfstudio.model_components.ray_samplers import PDFSampler, UniformSampler
+from app.nerfstudio.model_components.renderers import (
     AccumulationRenderer,
     DepthRenderer,
     RGBRenderer,
 )
-from nerfstudio.models.base_model import Model, ModelConfig
-from nerfstudio.utils import colormaps, colors, misc
+from app.nerfstudio.models.base_model import Model, ModelConfig
+from app.nerfstudio.utils import colormaps, colors, misc
 
 
 class MipNerfModel(Model):

@@ -27,9 +27,9 @@ from torch import nn
 from torchtyping import TensorType
 from typing_extensions import Literal
 
-from nerfstudio.field_components.base_field_component import FieldComponent
-from nerfstudio.utils.math import components_from_spherical_harmonics, expected_sin
-from nerfstudio.utils.printing import print_tcnn_speed_warning
+from app.nerfstudio.field_components.base_field_component import FieldComponent
+from app.nerfstudio.utils.math import components_from_spherical_harmonics, expected_sin
+from app.nerfstudio.utils.printing import print_tcnn_speed_warning
 
 try:
     import tinycudann as tcnn

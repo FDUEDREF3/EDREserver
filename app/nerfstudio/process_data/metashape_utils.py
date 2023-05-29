@@ -22,7 +22,7 @@ from typing import Dict, List
 import numpy as np
 from rich.console import Console
 
-from nerfstudio.process_data.process_data_utils import CAMERA_MODELS
+from app.nerfstudio.process_data.process_data_utils import CAMERA_MODELS
 
 CONSOLE = Console(width=120)
 

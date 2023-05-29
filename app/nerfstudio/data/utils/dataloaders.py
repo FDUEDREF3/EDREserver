@@ -28,11 +28,11 @@ from rich.progress import Console, track
 from torch.utils.data import Dataset
 from torch.utils.data.dataloader import DataLoader
 
-from nerfstudio.cameras.cameras import Cameras
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.data.datasets.base_dataset import InputDataset
-from nerfstudio.data.utils.nerfstudio_collate import nerfstudio_collate
-from nerfstudio.utils.misc import get_dict_to_torch
+from app.nerfstudio.cameras.cameras import Cameras
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.data.datasets.base_dataset import InputDataset
+from app.nerfstudio.data.utils.nerfstudio_collate import nerfstudio_collate
+from app.nerfstudio.utils.misc import get_dict_to_torch
 
 CONSOLE = Console(width=120)
 

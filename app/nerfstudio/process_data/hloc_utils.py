@@ -25,7 +25,7 @@ from pathlib import Path
 from rich.console import Console
 from typing_extensions import Literal
 
-from nerfstudio.process_data.process_data_utils import CameraModel
+from app.nerfstudio.process_data.process_data_utils import CameraModel
 
 try:
     # TODO(1480) un-hide pycolmap import

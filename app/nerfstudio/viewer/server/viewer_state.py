@@ -27,24 +27,24 @@ from rich.panel import Panel
 from rich.table import Table
 from typing_extensions import Literal
 
-from nerfstudio.configs import base_config as cfg
-from nerfstudio.data.datasets.base_dataset import InputDataset
-from nerfstudio.data.scene_box import SceneBox
-from nerfstudio.models.base_model import Model
-from nerfstudio.pipelines.base_pipeline import Pipeline
-from nerfstudio.utils.decorators import check_main_thread, decorate_all
-from nerfstudio.utils.io import load_from_json, write_to_json
-from nerfstudio.utils.writer import GLOBAL_BUFFER, EventName
-from nerfstudio.viewer.server import viewer_utils
-from nerfstudio.viewer.server.control_panel import ControlPanel
-from nerfstudio.viewer.server.gui_utils import parse_object
-from nerfstudio.viewer.server.render_state_machine import (
+from app.nerfstudio.configs import base_config as cfg
+from app.nerfstudio.data.datasets.base_dataset import InputDataset
+from app.nerfstudio.data.scene_box import SceneBox
+from app.nerfstudio.models.base_model import Model
+from app.nerfstudio.pipelines.base_pipeline import Pipeline
+from app.nerfstudio.utils.decorators import check_main_thread, decorate_all
+from app.nerfstudio.utils.io import load_from_json, write_to_json
+from app.nerfstudio.utils.writer import GLOBAL_BUFFER, EventName
+from app.nerfstudio.viewer.server import viewer_utils
+from app.nerfstudio.viewer.server.control_panel import ControlPanel
+from app.nerfstudio.viewer.server.gui_utils import parse_object
+from app.nerfstudio.viewer.server.render_state_machine import (
     RenderAction,
     RenderStateMachine,
 )
-from nerfstudio.viewer.server.viewer_elements import ViewerElement
-from nerfstudio.viewer.viser import ViserServer
-from nerfstudio.viewer.viser.messages import (
+from app.nerfstudio.viewer.server.viewer_elements import ViewerElement
+from app.nerfstudio.viewer.viser import ViserServer
+from app.nerfstudio.viewer.viser.messages import (
     CameraMessage,
     CameraPathOptionsRequest,
     CameraPathPayloadMessage,
@@ -56,7 +56,7 @@ from nerfstudio.viewer.viser.messages import (
 )
 
 if TYPE_CHECKING:
-    from nerfstudio.engine.trainer import Trainer
+    from app.nerfstudio.engine.trainer import Trainer
 
 CONSOLE = Console(width=120)
 

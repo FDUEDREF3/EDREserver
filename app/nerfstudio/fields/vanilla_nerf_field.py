@@ -21,17 +21,17 @@ import torch
 from torch import nn
 from torchtyping import TensorType
 
-from nerfstudio.cameras.rays import RaySamples
-from nerfstudio.field_components.encodings import Encoding, Identity
-from nerfstudio.field_components.field_heads import (
+from app.nerfstudio.cameras.rays import RaySamples
+from app.nerfstudio.field_components.encodings import Encoding, Identity
+from app.nerfstudio.field_components.field_heads import (
     DensityFieldHead,
     FieldHead,
     FieldHeadNames,
     RGBFieldHead,
 )
-from nerfstudio.field_components.mlp import MLP
-from nerfstudio.field_components.spatial_distortions import SpatialDistortion
-from nerfstudio.fields.base_field import Field
+from app.nerfstudio.field_components.mlp import MLP
+from app.nerfstudio.field_components.spatial_distortions import SpatialDistortion
+from app.nerfstudio.fields.base_field import Field
 
 
 class NeRFField(Field):

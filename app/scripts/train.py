@@ -47,10 +47,10 @@ from rich.console import Console
 
 import sys
 sys.path.append("/home/dcy/code/EDREserver/app")
-from nerfstudio.configs.config_utils import convert_markup_to_ansi
-from nerfstudio.configs.method_configs import AnnotatedBaseConfigUnion
-from nerfstudio.engine.trainer import TrainerConfig
-from nerfstudio.utils import comms, profiler
+from app.nerfstudio.configs.config_utils import convert_markup_to_ansi
+from app.nerfstudio.configs.method_configs import AnnotatedBaseConfigUnion
+from app.nerfstudio.engine.trainer import TrainerConfig
+from app.nerfstudio.utils import comms, profiler
 
 CONSOLE = Console(width=120)
 DEFAULT_TIMEOUT = timedelta(minutes=30)

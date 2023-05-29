@@ -20,7 +20,7 @@ from typing import Callable, List, Optional, Tuple
 import numpy as np
 import torch
 
-from nerfstudio.viewer.viser.messages import CameraMessage
+from app.nerfstudio.viewer.viser.messages import CameraMessage
 
 
 def get_chunks(

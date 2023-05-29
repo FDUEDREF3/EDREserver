@@ -25,13 +25,13 @@ import torch
 from nuscenes.nuscenes import NuScenes as NuScenesDatabase
 from typing_extensions import Literal
 
-from nerfstudio.cameras.cameras import Cameras, CameraType
-from nerfstudio.data.dataparsers.base_dataparser import (
+from app.nerfstudio.cameras.cameras import Cameras, CameraType
+from app.nerfstudio.data.dataparsers.base_dataparser import (
     DataParser,
     DataParserConfig,
     DataparserOutputs,
 )
-from nerfstudio.data.scene_box import SceneBox
+from app.nerfstudio.data.scene_box import SceneBox
 
 
 def rotation_translation_to_pose(r_quat, t_vec):

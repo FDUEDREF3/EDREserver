@@ -13,12 +13,12 @@ from rich.console import Console
 import sys
 sys.path.append("/home/dcy/code/EDREserver/app")
 
-from nerfstudio.configs.base_config import ViewerConfig
-from nerfstudio.engine.trainer import TrainerConfig
-from nerfstudio.pipelines.base_pipeline import Pipeline
-from nerfstudio.utils import writer
-from nerfstudio.utils.eval_utils import eval_setup
-from nerfstudio.viewer.server.viewer_state import ViewerState
+from app.nerfstudio.configs.base_config import ViewerConfig
+from app.nerfstudio.engine.trainer import TrainerConfig
+from app.nerfstudio.pipelines.base_pipeline import Pipeline
+from app.nerfstudio.utils import writer
+from app.nerfstudio.utils.eval_utils import eval_setup
+from app.nerfstudio.viewer.server.viewer_state import ViewerState
 
 CONSOLE = Console(width=120)
 

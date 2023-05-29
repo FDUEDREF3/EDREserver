@@ -22,8 +22,8 @@ from torch import nn
 from torchtyping import TensorType
 from typing_extensions import Literal
 
-from nerfstudio.cameras.rays import RaySamples
-from nerfstudio.utils.math import masked_reduction, normalized_depth_scale_and_shift
+from app.nerfstudio.cameras.rays import RaySamples
+from app.nerfstudio.utils.math import masked_reduction, normalized_depth_scale_and_shift
 
 L1Loss = nn.L1Loss
 MSELoss = nn.MSELoss

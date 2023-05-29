@@ -19,11 +19,11 @@ Semantic datamanager.
 from dataclasses import dataclass, field
 from typing import Type
 
-from nerfstudio.data.datamanagers.base_datamanager import (
+from app.nerfstudio.data.datamanagers.base_datamanager import (
     VanillaDataManager,
     VanillaDataManagerConfig,
 )
-from nerfstudio.data.datasets.semantic_dataset import SemanticDataset
+from app.nerfstudio.data.datasets.semantic_dataset import SemanticDataset
 
 
 @dataclass

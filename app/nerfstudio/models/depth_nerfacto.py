@@ -23,10 +23,10 @@ from typing import Dict, Tuple, Type
 
 import torch
 
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.model_components.losses import DepthLossType, depth_loss
-from nerfstudio.models.nerfacto import NerfactoModel, NerfactoModelConfig
-from nerfstudio.utils import colormaps
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.model_components.losses import DepthLossType, depth_loss
+from app.nerfstudio.models.nerfacto import NerfactoModel, NerfactoModelConfig
+from app.nerfstudio.utils import colormaps
 
 
 @dataclass

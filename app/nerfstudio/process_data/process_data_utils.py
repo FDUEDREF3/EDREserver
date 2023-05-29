@@ -27,8 +27,8 @@ import numpy as np
 from rich.console import Console
 from typing_extensions import Literal, OrderedDict
 
-from nerfstudio.utils.rich_utils import status
-from nerfstudio.utils.scripts import run_command
+from app.nerfstudio.utils.rich_utils import status
+from app.nerfstudio.utils.scripts import run_command
 
 CONSOLE = Console(width=120)
 POLYCAM_UPSCALING_TIMES = 2

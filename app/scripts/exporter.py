@@ -20,18 +20,18 @@ import tyro
 from rich.console import Console
 from typing_extensions import Annotated, Literal
 
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.exporter import texture_utils, tsdf_utils
-from nerfstudio.exporter.exporter_utils import (
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.exporter import texture_utils, tsdf_utils
+from app.nerfstudio.exporter.exporter_utils import (
     collect_camera_poses,
     generate_point_cloud,
     get_mesh_from_filename,
 )
-from nerfstudio.exporter.marching_cubes import (
+from app.nerfstudio.exporter.marching_cubes import (
     generate_mesh_with_multires_marching_cubes,
 )
-from nerfstudio.pipelines.base_pipeline import Pipeline, VanillaPipeline
-from nerfstudio.utils.eval_utils import eval_setup
+from app.nerfstudio.pipelines.base_pipeline import Pipeline, VanillaPipeline
+from app.nerfstudio.utils.eval_utils import eval_setup
 
 CONSOLE = Console(width=120)
 

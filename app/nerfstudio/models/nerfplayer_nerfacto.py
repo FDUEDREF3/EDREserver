@@ -29,30 +29,30 @@ from torchmetrics.functional import structural_similarity_index_measure
 from torchmetrics.image.lpip import LearnedPerceptualImagePatchSimilarity
 from typing_extensions import Literal
 
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.field_components.field_heads import FieldHeadNames
-from nerfstudio.field_components.spatial_distortions import SceneContraction
-from nerfstudio.fields.nerfplayer_nerfacto_field import (
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.field_components.field_heads import FieldHeadNames
+from app.nerfstudio.field_components.spatial_distortions import SceneContraction
+from app.nerfstudio.fields.nerfplayer_nerfacto_field import (
     NerfplayerNerfactoField,
     TemporalHashMLPDensityField,
 )
-from nerfstudio.model_components.losses import (
+from app.nerfstudio.model_components.losses import (
     MSELoss,
     interlevel_loss,
     orientation_loss,
     pred_normal_loss,
 )
-from nerfstudio.model_components.ray_samplers import ProposalNetworkSampler
-from nerfstudio.model_components.renderers import (
+from app.nerfstudio.model_components.ray_samplers import ProposalNetworkSampler
+from app.nerfstudio.model_components.renderers import (
     AccumulationRenderer,
     DepthRenderer,
     NormalsRenderer,
     RGBRenderer,
 )
-from nerfstudio.model_components.scene_colliders import NearFarCollider
-from nerfstudio.model_components.shaders import NormalsShader
-from nerfstudio.models.base_model import Model
-from nerfstudio.models.nerfacto import NerfactoModel, NerfactoModelConfig
+from app.nerfstudio.model_components.scene_colliders import NearFarCollider
+from app.nerfstudio.model_components.shaders import NormalsShader
+from app.nerfstudio.models.base_model import Model
+from app.nerfstudio.models.nerfacto import NerfactoModel, NerfactoModelConfig
 
 
 @dataclass

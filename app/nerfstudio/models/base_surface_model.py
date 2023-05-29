@@ -30,31 +30,31 @@ from torchmetrics.functional import structural_similarity_index_measure
 from torchmetrics.image.lpip import LearnedPerceptualImagePatchSimilarity
 from typing_extensions import Literal
 
-from nerfstudio.cameras.rays import RayBundle
-from nerfstudio.field_components.encodings import NeRFEncoding
-from nerfstudio.field_components.field_heads import FieldHeadNames
-from nerfstudio.field_components.spatial_distortions import SceneContraction
-from nerfstudio.fields.nerfacto_field import TCNNNerfactoField
-from nerfstudio.fields.sdf_field import SDFFieldConfig
-from nerfstudio.fields.vanilla_nerf_field import NeRFField
-from nerfstudio.model_components.losses import (
+from app.nerfstudio.cameras.rays import RayBundle
+from app.nerfstudio.field_components.encodings import NeRFEncoding
+from app.nerfstudio.field_components.field_heads import FieldHeadNames
+from app.nerfstudio.field_components.spatial_distortions import SceneContraction
+from app.nerfstudio.fields.nerfacto_field import TCNNNerfactoField
+from app.nerfstudio.fields.sdf_field import SDFFieldConfig
+from app.nerfstudio.fields.vanilla_nerf_field import NeRFField
+from app.nerfstudio.model_components.losses import (
     L1Loss,
     MSELoss,
     ScaleAndShiftInvariantLoss,
     monosdf_normal_loss,
 )
-from nerfstudio.model_components.ray_samplers import LinearDisparitySampler
-from nerfstudio.model_components.renderers import (
+from app.nerfstudio.model_components.ray_samplers import LinearDisparitySampler
+from app.nerfstudio.model_components.renderers import (
     AccumulationRenderer,
     DepthRenderer,
     RGBRenderer,
     SemanticRenderer,
 )
-from nerfstudio.model_components.scene_colliders import AABBBoxCollider, NearFarCollider
-from nerfstudio.models.base_model import Model, ModelConfig
-from nerfstudio.utils import colormaps
-from nerfstudio.utils.colors import get_color
-from nerfstudio.utils.math import normalized_depth_scale_and_shift
+from app.nerfstudio.model_components.scene_colliders import AABBBoxCollider, NearFarCollider
+from app.nerfstudio.models.base_model import Model, ModelConfig
+from app.nerfstudio.utils import colormaps
+from app.nerfstudio.utils.colors import get_color
+from app.nerfstudio.utils.math import normalized_depth_scale_and_shift
 
 
 @dataclass

@@ -24,7 +24,7 @@ import numpy as np
 from torch.optim import Optimizer, lr_scheduler
 from typing_extensions import Literal
 
-from nerfstudio.configs.base_config import InstantiateConfig
+from app.nerfstudio.configs.base_config import InstantiateConfig
 
 
 @dataclass

@@ -32,7 +32,7 @@ from rich.progress import (
     TimeRemainingColumn,
 )
 
-from nerfstudio.utils.rich_utils import ItersPerSecColumn
+from app.nerfstudio.utils.rich_utils import ItersPerSecColumn
 
 CONSOLE = Console(width=120)
 

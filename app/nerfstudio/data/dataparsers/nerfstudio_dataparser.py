@@ -26,15 +26,15 @@ from PIL import Image
 from rich.console import Console
 from typing_extensions import Literal
 
-from nerfstudio.cameras import camera_utils
-from nerfstudio.cameras.cameras import CAMERA_MODEL_TO_TYPE, Cameras, CameraType
-from nerfstudio.data.dataparsers.base_dataparser import (
+from app.nerfstudio.cameras import camera_utils
+from app.nerfstudio.cameras.cameras import CAMERA_MODEL_TO_TYPE, Cameras, CameraType
+from app.nerfstudio.data.dataparsers.base_dataparser import (
     DataParser,
     DataParserConfig,
     DataparserOutputs,
 )
-from nerfstudio.data.scene_box import SceneBox
-from nerfstudio.utils.io import load_from_json
+from app.nerfstudio.data.scene_box import SceneBox
+from app.nerfstudio.utils.io import load_from_json
 
 CONSOLE = Console(width=120)
 MAX_AUTO_RESOLUTION = 1600

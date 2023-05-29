@@ -22,8 +22,8 @@ from typing import Dict
 import numpy as np
 import torch
 
-from nerfstudio.data.dataparsers.base_dataparser import DataparserOutputs
-from nerfstudio.data.datasets.base_dataset import InputDataset
+from app.nerfstudio.data.dataparsers.base_dataparser import DataparserOutputs
+from app.nerfstudio.data.datasets.base_dataset import InputDataset
 
 
 class SDFDataset(InputDataset):

@@ -31,18 +31,18 @@ from rich.table import Table
 from torchtyping import TensorType
 from typing_extensions import Literal, assert_never
 
-from nerfstudio.cameras.camera_paths import (
+from app.nerfstudio.cameras.camera_paths import (
     get_interpolated_camera_path,
     get_path_from_json,
     get_spiral_path,
 )
-from nerfstudio.cameras.cameras import Cameras, CameraType
-from nerfstudio.data.scene_box import SceneBox
-from nerfstudio.model_components import renderers
-from nerfstudio.pipelines.base_pipeline import Pipeline
-from nerfstudio.utils import install_checks
-from nerfstudio.utils.eval_utils import eval_setup
-from nerfstudio.utils.rich_utils import ItersPerSecColumn
+from app.nerfstudio.cameras.cameras import Cameras, CameraType
+from app.nerfstudio.data.scene_box import SceneBox
+from app.nerfstudio.model_components import renderers
+from app.nerfstudio.pipelines.base_pipeline import Pipeline
+from app.nerfstudio.utils import install_checks
+from app.nerfstudio.utils.eval_utils import eval_setup
+from app.nerfstudio.utils.rich_utils import ItersPerSecColumn
 
 CONSOLE = Console(width=120)
 

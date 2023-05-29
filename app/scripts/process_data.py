@@ -13,20 +13,20 @@ import tyro
 from rich.console import Console
 from typing_extensions import Annotated
 
-from nerfstudio.process_data import (
+from app.nerfstudio.process_data import (
     metashape_utils,
     polycam_utils,
     process_data_utils,
     realitycapture_utils,
     record3d_utils,
 )
-from nerfstudio.process_data.colmap_converter_to_nerfstudio_dataset import (
+from app.nerfstudio.process_data.colmap_converter_to_nerfstudio_dataset import (
     BaseConverterToNerfstudioDataset,
 )
-from nerfstudio.process_data.images_to_nerstudio_dataset import (
+from app.nerfstudio.process_data.images_to_nerstudio_dataset import (
     ImagesToNerfstudioDataset,
 )
-from nerfstudio.process_data.video_to_nerfstudio_dataset import VideoToNerfstudioDataset
+from app.nerfstudio.process_data.video_to_nerfstudio_dataset import VideoToNerfstudioDataset
 
 CONSOLE = Console(width=120)
 

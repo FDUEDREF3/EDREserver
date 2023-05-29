@@ -24,7 +24,7 @@ from nerfacc import OccGridEstimator
 from torch import nn
 from torchtyping import TensorType
 
-from nerfstudio.cameras.rays import Frustums, RayBundle, RaySamples
+from app.nerfstudio.cameras.rays import Frustums, RayBundle, RaySamples
 
 
 class Sampler(nn.Module):

@@ -19,7 +19,7 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import Any, Callable, Generic, List, Optional, Tuple, TypeVar
 
-from nerfstudio.viewer.viser import GuiHandle, GuiSelectHandle, ViserServer
+from app.nerfstudio.viewer.viser import GuiHandle, GuiSelectHandle, ViserServer
 
 TValue = TypeVar("TValue")
 

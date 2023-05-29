@@ -18,22 +18,22 @@ from multiprocessing import context
 import subprocess
 
 
-from nerfstudio.process_data.video_to_nerfstudio_dataset import VideoToNerfstudioDataset 
-from nerfstudio.process_data.images_to_nerstudio_dataset import ImagesToNerfstudioDataset
-from scripts.train import main as starTrainMethod
+from app.nerfstudio.process_data.video_to_nerfstudio_dataset import VideoToNerfstudioDataset 
+from app.nerfstudio.process_data.images_to_nerstudio_dataset import ImagesToNerfstudioDataset
+from app.scripts.train import main as starTrainMethod
 
-from nerfstudio.pipelines.base_pipeline import VanillaPipelineConfig
-from nerfstudio.data.datamanagers.base_datamanager import VanillaDataManagerConfig
-from nerfstudio.data.dataparsers.nerfstudio_dataparser import NerfstudioDataParserConfig
-from nerfstudio.models.nerfacto import NerfactoModelConfig
-from nerfstudio.cameras.camera_optimizers import CameraOptimizerConfig
-from nerfstudio.engine.optimizers import AdamOptimizerConfig
-from nerfstudio.configs.base_config import ViewerConfig
-from scripts.viewer.run_viewer import RunViewer
+from app.nerfstudio.pipelines.base_pipeline import VanillaPipelineConfig
+from app.nerfstudio.data.datamanagers.base_datamanager import VanillaDataManagerConfig
+from app.nerfstudio.data.dataparsers.nerfstudio_dataparser import NerfstudioDataParserConfig
+from app.nerfstudio.models.nerfacto import NerfactoModelConfig
+from app.nerfstudio.cameras.camera_optimizers import CameraOptimizerConfig
+from app.nerfstudio.engine.optimizers import AdamOptimizerConfig
+from app.nerfstudio.configs.base_config import ViewerConfig
+from app.scripts.viewer.run_viewer import RunViewer
 from concurrent.futures import ThreadPoolExecutor
 import time
 
-from nerfstudio.engine.trainer import TrainerConfig
+from app.nerfstudio.engine.trainer import TrainerConfig
 
 
 api = Blueprint('api', __name__)
@@ -436,6 +436,64 @@ def nerfactothread(colmapPath,finalOutputPathHead,projectName):
         db.session.commit()
 
 
+def colmapAndTrainThread(imagePath, colmapOutputPath, finalOutputPathHead, projectName):
+    """colmap部分"""
+    imagesToNerfstudioDataset = ImagesToNerfstudioDataset(Path(imagePath), Path(colmapOutputPath))
+    # imagesToNerfstudioDataset.aquireData(Path(imagePathHead + projectName), Path(outputPathHead)) #增加数据，目前不需要
+    imagesToNerfstudioDataset.main()
+    """colmap后修改数据库"""
+    with app.app_context():
+        proj = ProjectList.query.filter(ProjectList.title==projectName).first()
+        proj.state = 1
+        db.session.commit()
+
+    """训练部分"""
+    """调包运行"""
+    dataParser = NerfstudioDataParserConfig()
+    dataParser.getDataDir(Path(colmapOutputPath))
+
+    nowMethod = TrainerConfig(
+        method_name="nerfacto",
+        steps_per_eval_batch=500,
+        steps_per_save=2000,
+        max_num_iterations=30000,
+        mixed_precision=True,
+        pipeline=VanillaPipelineConfig(
+            datamanager=VanillaDataManagerConfig(
+                dataparser=dataParser,
+                train_num_rays_per_batch=4096,
+                eval_num_rays_per_batch=4096,
+                camera_optimizer=CameraOptimizerConfig(
+                    mode="SO3xR3", optimizer=AdamOptimizerConfig(lr=6e-4, eps=1e-8, weight_decay=1e-2)
+                ),
+            ),
+            model=NerfactoModelConfig(eval_num_rays_per_chunk=1 << 15),
+        ),
+        optimizers={
+            "proposal_networks": {
+                "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
+                "scheduler": None,
+            },
+            "fields": {
+                "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
+                "scheduler": None,
+            },
+        },
+        viewer=ViewerConfig(num_rays_per_chunk=1 << 15, quit_on_train_completion=True),
+        # vis="viewer",
+        vis="tensorboard",           #不进行前端显示
+    )
+    nowMethod.set_output_dir(Path(finalOutputPathHead + projectName))
+    starTrainMethod(nowMethod)
+    """训练完成后修改数据库"""
+    with app.app_context():
+        proj = ProjectList.query.filter(ProjectList.title==projectName).first()
+        config_path = Path(finalOutputPathHead + projectName + "/nerfacto/" + "config.yml")
+        proj.configPath = str(config_path)
+        proj.state = 2
+        db.session.commit()
+
+
 @api.route('/runColmap', methods=["POST"])
 def runColmap():
     title = request.form.get("title")
@@ -466,3 +524,18 @@ def runTrain():
     thread.start()
     return jsonify({'status': 'success'})
     
+@api.route('/runColmapAndTrain', methods=["POST"])
+def runColmapAndTrain():
+    title = request.form.get("title")
+    # outputPathHead = "./app/data/afterColmap/"
+    proj = ProjectList.query.filter(ProjectList.title==title).first()
+    title = proj.title
+    project_path = proj.projectPath
+    outputPath = proj.colmapPath
+    finalOutputPathHead = "./app/data/afterNerfacto/"   #训练完成结果路径
+
+    if len(project_path) == 0:
+        return jsonify({'status': 'fail'})
+    thread = threading.Thread(target=colmapAndTrainThread, args=(project_path, outputPath, finalOutputPathHead, title))
+    thread.start()
+    return jsonify({'status': 'success'})

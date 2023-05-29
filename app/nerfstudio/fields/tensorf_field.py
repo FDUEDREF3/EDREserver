@@ -22,12 +22,12 @@ from torch import nn
 from torch.nn.parameter import Parameter
 from torchtyping import TensorType
 
-from nerfstudio.cameras.rays import RaySamples
-from nerfstudio.data.scene_box import SceneBox
-from nerfstudio.field_components.encodings import Encoding, Identity, SHEncoding
-from nerfstudio.field_components.field_heads import FieldHeadNames, RGBFieldHead
-from nerfstudio.field_components.mlp import MLP
-from nerfstudio.fields.base_field import Field
+from app.nerfstudio.cameras.rays import RaySamples
+from app.nerfstudio.data.scene_box import SceneBox
+from app.nerfstudio.field_components.encodings import Encoding, Identity, SHEncoding
+from app.nerfstudio.field_components.field_heads import FieldHeadNames, RGBFieldHead
+from app.nerfstudio.field_components.mlp import MLP
+from app.nerfstudio.fields.base_field import Field
 
 
 class TensoRFField(Field):

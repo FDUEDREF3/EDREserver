@@ -14,7 +14,7 @@
 
 from typing import List
 
-from nerfstudio.viewer.server.state.node import Node
+from app.nerfstudio.viewer.server.state.node import Node
 
 
 class StateNode(Node):

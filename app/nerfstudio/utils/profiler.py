@@ -29,9 +29,9 @@ from typing import Callable, Dict, List, Optional, Tuple, Union
 from rich.console import Console
 from torch.profiler import ProfilerActivity, profile, record_function
 
-from nerfstudio.configs import base_config as cfg
-from nerfstudio.utils import comms
-from nerfstudio.utils.decorators import (
+from app.nerfstudio.configs import base_config as cfg
+from app.nerfstudio.utils import comms
+from app.nerfstudio.utils.decorators import (
     check_main_thread,
     check_profiler_enabled,
     decorate_all,

@@ -23,7 +23,7 @@ import numpy as np
 from PIL import Image
 from rich.console import Console
 
-from nerfstudio.process_data.process_data_utils import CAMERA_MODELS
+from app.nerfstudio.process_data.process_data_utils import CAMERA_MODELS
 
 CONSOLE = Console(width=120)
 
