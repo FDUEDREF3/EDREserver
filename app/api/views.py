@@ -255,22 +255,22 @@ def startViewer():
     try:
         title = request.form.get("title")
     except:
-        return jsonify({'status': 'fail', 'message':'parameters error'})
+        return jsonify({'status': 'fail', 'message':'parameters error', 'websocket_url':''})
     try:
         proj = ProjectList.query.filter(ProjectList.title==title).first()
         config_path = proj.configPath
     except:
-        return jsonify({'status': 'fail', 'message':'database error'})
+        return jsonify({'status': 'fail', 'message':'database error', 'websocket_url':''})
     if len(config_path) == 0:
-        return jsonify({'status': 'fail', 'message':'empty data'})
+        return jsonify({'status': 'fail', 'message':'empty data', 'websocket_url':''})
     address = "10.177.35.76"
     port = ''
     """限制端口"""
 
     if title in processDict:
-        return jsonify({'status': 'fail', 'message':'websocket already in use'})
+        return jsonify({'status': 'fail', 'message':'websocket already in use', 'websocket_url':''})
     if len(processDict)>=2:
-        return jsonify({'status': 'fail', 'message':'full process'})
+        return jsonify({'status': 'fail', 'message':'full process', 'websocket_url':''})
     if availPort['7007'] == '':
         port = '7007'
     else:
@@ -288,7 +288,7 @@ def startViewer():
     #                      universal_newlines=True,
     #                      shell=True)
     # print(config_path)
-    p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path,'--viewer.websocket-port',port])
+    p = subprocess.Popen(['python', '/home/edre/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path,'--viewer.websocket-port',port])
 
 
     """限制端口"""
@@ -303,7 +303,7 @@ def startViewer():
 
     websocket_url = "ws://" + address + ":" + port
 
-    return jsonify({'status': 'success', 'websocket_url': websocket_url})
+    return jsonify({'status': 'success', 'message':'websocket is already open', 'websocket_url': websocket_url})
 
 
 
