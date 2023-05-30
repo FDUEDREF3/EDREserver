@@ -288,7 +288,7 @@ def startViewer():
     #                      universal_newlines=True,
     #                      shell=True)
     # print(config_path)
-    p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path,'--viewer.websocket-port',port])
+    p = subprocess.Popen(['python', '/home/edre/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path,'--viewer.websocket-port',port])
 
 
     """限制端口"""
