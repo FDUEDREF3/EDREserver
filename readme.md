@@ -111,7 +111,7 @@ pip install -r requirements.txt
 python run.py
 ```
 
-![image-20230531100340281](/Users/mac/Library/Application Support/typora-user-images/image-20230531100340281.png)
+![image2](docs/images/image2.png)
 
 出现该提示则说明服务成功运行
 
