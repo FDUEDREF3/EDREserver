@@ -57,7 +57,63 @@ cd vcpkg
 
 ##### 安装torch和tiny-cuda-nn
 
+For CUDA 11.3:
 
+```
+pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 -f https://download.pytorch.org/whl/torch_stable.html
+pip install ninja git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
+```
+
+For CUDA 11.7:
+
+```
+pip install torch==1.13.1 torchvision functorch --extra-index-url https://download.pytorch.org/whl/cu117
+pip install ninja git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
+```
+
+对于tiny-cuda-nn的安装，如果上述指令无法获取，则使用从[tiny-cuda-nn](https://github.com/NVlabs/tiny-cuda-nn/)仓库获取文件安装：
+
+```
+git clone --recursive https://github.com/nvlabs/tiny-cuda-nn
+cd tiny-cuda-nn
+cd bindings/torch
+```
+
+可选择使用以下几个命令进行安装：
+
+```
+python setup.py install
+```
+
+或者
+
+```
+pip install -e .
+```
+
+或者
+
+```
+pip install .
+```
+
+##### 安装其他依赖包
+
+```
+pip install -r requirements.txt
+```
+
+#### 2.Start-服务开启
+
+运行一下命令实现服务的开启
+
+```
+python run.py
+```
+
+![image-20230531100340281](/Users/mac/Library/Application Support/typora-user-images/image-20230531100340281.png)
+
+出现该提示则说明服务成功运行
 
 ## Project details-项目细节
 
