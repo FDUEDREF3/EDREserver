@@ -263,7 +263,7 @@ def startViewer():
         return jsonify({'status': 'fail', 'message':'database error', 'websocket_url':''})
     if len(config_path) == 0:
         return jsonify({'status': 'fail', 'message':'empty data', 'websocket_url':''})
-    address = "10.177.35.76"
+    address = "10.177.35.162"
     port = ''
     """限制端口"""
 
