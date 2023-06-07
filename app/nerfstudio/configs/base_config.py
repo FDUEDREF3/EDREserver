@@ -148,5 +148,5 @@ class ViewerConfig(PrintableConfig):
     """Whether to kill the training job when it has completed. Note this will stop rendering in the viewer."""
     image_format: Literal["jpeg", "png"] = "jpeg"
     """Image format viewer should use; jpeg is lossy compression, while png is lossless."""
-    jpeg_quality: int = 90
+    jpeg_quality: int = 100    # 90
     """Quality tradeoff to use for jpeg compression."""

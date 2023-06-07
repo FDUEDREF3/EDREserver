@@ -123,7 +123,8 @@ class RenderStateMachine(threading.Thread):
         )
 
         image_height, image_width = self._calculate_image_res(cam_msg.aspect)
-
+        # image_height = 1440
+        # image_width = 2560
         intrinsics_matrix, camera_to_world_h = get_intrinsics_matrix_and_camera_to_world_h(
             cam_msg, image_height=image_height, image_width=image_width
         )

@@ -403,6 +403,7 @@ class MessageApi(abc.ABC):
             file_format: The file format to use for the image.
             quality: The quality of the image, if using jpeg. Must be an integer between 0 and 100.
         """
+        # print(image.shape)
         media_type, base64_data = _encode_image_base64(image, file_format, quality=quality)
         self._queue(messages.BackgroundImageMessage(media_type=media_type, base64_data=base64_data))
 

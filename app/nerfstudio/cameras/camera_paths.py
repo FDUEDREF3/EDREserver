@@ -125,6 +125,8 @@ def get_path_from_json(camera_path: Dict[str, Any]) -> Cameras:
 
     image_height = camera_path["render_height"]
     image_width = camera_path["render_width"]
+    # image_height = 1440
+    # image_width = 2560
 
     if "camera_type" not in camera_path:
         camera_type = CameraType.PERSPECTIVE

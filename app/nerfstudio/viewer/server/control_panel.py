@@ -92,6 +92,8 @@ class ControlPanel:
 
         self.add_element(self._time, additional_tags=("time",))
 
+        self._max_res.value = 2048 # 2k渲染设置
+
     def _train_speed_cb(self) -> None:
         """Callback for when the train speed is changed"""
         if self.train_speed == "Fast":

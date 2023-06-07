@@ -1,5 +1,5 @@
 from flask import Blueprint  # 从flask包里面导入Flask核心类
-from flask import request, send_file,jsonify
+from flask import request, send_file,jsonify,Response
 from multiprocessing import Process
 
 from app import db,app
@@ -263,7 +263,7 @@ def startViewer():
         return jsonify({'status': 'fail', 'message':'database error', 'websocket_url':''})
     if len(config_path) == 0:
         return jsonify({'status': 'fail', 'message':'empty data', 'websocket_url':''})
-    address = "10.177.35.162"
+    address = "10.177.35.76"
     port = ''
     """限制端口"""
 
@@ -288,12 +288,13 @@ def startViewer():
     #                      universal_newlines=True,
     #                      shell=True)
     # print(config_path)
-    p = subprocess.Popen(['python', '/home/edre/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path,'--viewer.websocket-port',port])
+    # p = subprocess.Popen(['python', '/home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py','--load-config', config_path,'--viewer.websocket-port',port])
+    p = subprocess.Popen(['python', 'app/scripts/viewer/run_viewer.py','--load-config', config_path,'--viewer.websocket-port',port])
 
 
     """限制端口"""
     processDict[title] = p
-    # time.sleep(5)
+    time.sleep(4)
     # commandString = "python /home/dcy/code/EDREserver/app/scripts/viewer/run_viewer.py " + "--load-config " + config_path
     # os.system(commandString)
     # runViewer = RunViewer(Path(config_path))
@@ -437,15 +438,21 @@ def nerfactothread(colmapPath,finalOutputPathHead,projectName):
 
 
 def colmapAndTrainThread(imagePath, colmapOutputPath, finalOutputPathHead, projectName):
-    """colmap部分"""
-    imagesToNerfstudioDataset = ImagesToNerfstudioDataset(Path(imagePath), Path(colmapOutputPath))
-    # imagesToNerfstudioDataset.aquireData(Path(imagePathHead + projectName), Path(outputPathHead)) #增加数据，目前不需要
-    imagesToNerfstudioDataset.main()
-    """colmap后修改数据库"""
+
+    """colmap前修改数据库"""
     with app.app_context():
         proj = ProjectList.query.filter(ProjectList.title==projectName).first()
         proj.state = 1
         db.session.commit()
+    """colmap部分"""
+    imagesToNerfstudioDataset = ImagesToNerfstudioDataset(Path(imagePath), Path(colmapOutputPath))
+    # imagesToNerfstudioDataset.aquireData(Path(imagePathHead + projectName), Path(outputPathHead)) #增加数据，目前不需要
+    imagesToNerfstudioDataset.main()
+    # """colmap后修改数据库"""
+    # with app.app_context():
+    #     proj = ProjectList.query.filter(ProjectList.title==projectName).first()
+    #     proj.state = 1
+    #     db.session.commit()
 
     """训练部分"""
     """调包运行"""
@@ -539,3 +546,34 @@ def runColmapAndTrain():
     thread = threading.Thread(target=colmapAndTrainThread, args=(project_path, outputPath, finalOutputPathHead, title))
     thread.start()
     return jsonify({'status': 'success'})
+
+@api.route('/downloadFile', methods=["POST"])
+def downloadFile():
+    # print(os.getcwd())
+    filePath = "app/data/pureImages/yangpu/杨浦滨江-2_1.mp4"
+    # filePath = "app/data/avatar/lee test.jpg"
+    fullPath = os.path.join(os.getcwd(),filePath)
+    # print(os.path.exists(fullPath))
+    if os.path.exists(fullPath):
+        # return send_file(fullPath, as_attachment=True)
+        return send_file(fullPath)
+    else:
+        return jsonify({
+            'status': 'fail',
+        })
+    # return jsonify({'status': 'success'})
+
+@api.route('/downloadVideo', methods=["POST"])
+def video():
+    return Response(generate_file(), mimetype='video/mp4')
+
+def generate_file():
+    filePath = "app/data/pureImages/yangpu/杨浦滨江-2_1.mp4"
+    # filePath = "app/data/avatar/lee test.jpg"
+    fullPath = os.path.join(os.getcwd(),filePath)
+    with open(fullPath, 'rb') as f:
+        while True:
+            chunk = f.read(20 * 1024 * 1024)  # 每次读取20M
+            if not chunk:
+                break
+            yield chunk
