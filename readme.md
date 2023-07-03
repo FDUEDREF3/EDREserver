@@ -119,7 +119,7 @@ python run.py
 
 #### 1.framework-整体框架
 
-![](/Users/mac/Desktop/研究生/研一下/7_3version/EDREserver/docs/images/image3.png)
+![](docs/images/image3.png)
 
 EDREserver/run.py即为本项目启动Flask服务的入口，通过调用EDREserver/app/create_app.py配置flask，其中的EDREserver/app/init.py用于保存创建的数据库以及flask对象。
 
@@ -173,7 +173,7 @@ api/createProject->api/uploadImgs->api/runColmapAndTrain->api/viewer
 
 #### 3.数据库设计
 
-![](/Users/mac/Desktop/研究生/研一下/7_3version/EDREserver/docs/images/image4.png)
+![](docs/images/image4.png)
 
 目前title被标明为UNIQUE，唯一指明当前的模型，表中state指明当前创建的模型的状态，0，1，2分别代表colmap中，训练中，训练结束
 
