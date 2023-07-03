@@ -14,7 +14,7 @@ class ProjectList(db.Model):
     imgNum = db.Column(db.Integer)
     # createTime = db.Column(db.DateTime)  #带有时分秒
     createTime = db.Column(db.Date)
-    state = db.Column(db.Integer)
+    state = db.Column(db.Integer)   # 0，1，2分别代表colmap中，训练中，训练结束
     configPath = db.Column(db.String)
     colmapPath = db.Column(db.Text)
 
