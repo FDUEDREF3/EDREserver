@@ -8,89 +8,13 @@ from datetime import datetime
 from pathlib import Path
 import os
 
-import multiprocessing
-from werkzeug.datastructures import FileStorage
 import base64
-import concurrent.futures
 import threading
-import dill
-from multiprocessing import context
 import subprocess
 
+from app.n2m_script.data.colmap2nerf import mainF
 
-from app.nerfstudio.process_data.video_to_nerfstudio_dataset import VideoToNerfstudioDataset 
-from app.nerfstudio.process_data.images_to_nerstudio_dataset import ImagesToNerfstudioDataset
-from app.scripts.train import main as starTrainMethod
-
-from app.nerfstudio.pipelines.base_pipeline import VanillaPipelineConfig
-from app.nerfstudio.data.datamanagers.base_datamanager import VanillaDataManagerConfig
-from app.nerfstudio.data.dataparsers.nerfstudio_dataparser import NerfstudioDataParserConfig
-from app.nerfstudio.models.nerfacto import NerfactoModelConfig
-from app.nerfstudio.cameras.camera_optimizers import CameraOptimizerConfig
-from app.nerfstudio.engine.optimizers import AdamOptimizerConfig
-from app.nerfstudio.configs.base_config import ViewerConfig
-from app.scripts.viewer.run_viewer import RunViewer
-from concurrent.futures import ThreadPoolExecutor
-import time
-
-from app.nerfstudio.engine.trainer import TrainerConfig
-
-
-api = Blueprint('api', __name__)
-
-
-"""临时用"""
-processDict = {}
-availPort = {'7007':'','7008':''}
-
-
-@api.route('/h',methods=["GET"])  # 使用app提供的route装饰器 对函数进行装饰 即可成为视图函数
-def hello():
-    return 'hello flask'
-
-@api.route('/selecttest', methods=["GET"])  # 测试从数据库中获取数据
-def getData():
-    # 添加数据
-    projectList = ProjectList.query.filter(ProjectList.id=="1").first()
-    print(projectList)
-    return "数据操作成功"
-
-@api.route('/addtest', methods=["POST"])  # 测试向数据库中添加数据
-def addData():
-    # 添加数据
-    projectList = ProjectList(projectName="test2", previewImgPath="./data/proj1/test2", projectPath="./dataproj1", imgNum=200, createTime=datetime.now())
-    db.session.add(projectList)
-    db.session.commit() 
-
-    # # 查询数据
-    # article = Article.query.filter_by(id=1)[0]
-    # print(article.title)
-    #
-    # # 修改数据
-    # article = Article.query.filter_by(id=1)[0]
-    # article.content = "yyy"
-    # db.session.commit()
-    #
-    # # 删除数据
-    # article = Article.query.filter_by(id=1)[0]
-    # db.session.delete(article)
-    # db.session.commit()
-    return "数据操作成功"
-
-
-@api.route('/getAllProjects', methods=["get"])   #获取所有项目
-def getAllProjects():
-    try:
-        projectList = ProjectList.query.all()
-    except:
-        return jsonify({'status': 'fail', 'message':'database error'})
-    reProjectList = []
-    for proj in projectList:
-        with open(proj.avatarImgPath, 'rb') as file:
-            avatarImg = base64.b64encode(file.read()).decode('utf-8')
-            projDict = {"id": proj.id, "title": proj.title, "avatar": avatarImg, "datetime": proj.createTime, "state": proj.state, "imgNum": proj.imgNum, "method": proj.method}
-            reProjectList.append(projDict)
-    return jsonify({'projects': reProjectList})
+n2m_api = Blueprint('nerf2mesh', __name__)
 
 
 def trainthread(imagePathHead, outputPathHead, finalOutputPathHead, projectName):
@@ -157,13 +81,9 @@ def trainthread(imagePathHead, outputPathHead, finalOutputPathHead, projectName)
         proj.configPath = str(config_path)
         proj.state = 2
         db.session.commit()
-    # return "训练完成"
-
-# def callback(result):
-#     print('Result:', result)
 
 
-@api.route('/startTrain', methods=["POST"])  # 测试向数据库中添加数据
+@n2m_api.route('/startTrain', methods=["POST"])  # 测试向数据库中添加数据
 def startTrain():
     try:
         trainData = request.form
@@ -248,7 +168,7 @@ def startTrain():
 #     # runViewer.main()
 
 
-@api.route('/viewer', methods=["POST"])  # 测试向数据库中添加数据
+@n2m_api.route('/viewer', methods=["POST"])  # 测试向数据库中添加数据
 def startViewer():
     # title = request.args["title"]
 
@@ -309,7 +229,7 @@ def startViewer():
 
 
 
-@api.route('/viewerClose', methods=["POST"])  
+@n2m_api.route('/viewerClose', methods=["POST"])  
 def stopViewer():
     # title = request.args["title"]
     try:
@@ -329,7 +249,7 @@ def stopViewer():
 
 
 
-@api.route('/createProject', methods=["POST"])
+@n2m_api.route('/createProject', methods=["POST"])
 def createProject():
     trainData = request.form
     projectName = trainData.get("title")
@@ -339,61 +259,50 @@ def createProject():
     dateTimeObj = datetime.strptime(dateTimeString, formatString)
 
     state = 0   #0，1，2分别代表colmap中，训练中，训练结束
-    avatarPathHead = "./app/data/avatar/"
-    imagePathHead = "./app/data/pureImages/"
-    outputPathHead = "./app/data/afterColmap/"
-    if not os.path.exists("./app/data"):
-        os.mkdir("./app.data")
+    avatarPathHead = "./app/n2m_data/"+projectName+"/avatar/"
+    imagePathHead = "./app/n2m_data/"+projectName+"/images/"
+    colmapDir = "./app/n2m_data/"+projectName
+    if not os.path.exists(colmapDir):
+        os.mkdir(colmapDir)
     if not os.path.exists(avatarPathHead):
         os.mkdir(avatarPathHead)
     if not os.path.exists(imagePathHead):
         os.mkdir(imagePathHead)
-    if not os.path.exists(outputPathHead):
-        os.mkdir(outputPathHead)
-    if not os.path.exists("./app/data/afterNerfacto/"):
-        os.mkdir("./app/data/afterNerfacto/")
-    if not os.path.exists(imagePathHead + projectName + '/'):
-        os.mkdir(imagePathHead + projectName + '/')
-    avatarPath = avatarPathHead + projectName + Path(avatar.filename).suffix
+        
+    avatarPath = avatarPathHead +projectName+ Path(avatar.filename).suffix
     avatar.save(avatarPath)
 
-    projectList = ProjectList(title=projectName, avatarImgPath=avatarPath, projectPath=imagePathHead+projectName, imgNum=0, createTime=dateTimeObj.date(), state=state, configPath=str(''), colmapPath=outputPathHead+projectName, method=0)
+    projectList = ProjectList(title=projectName, avatarImgPath=avatarPath, projectPath=imagePathHead, imgNum=0, createTime=dateTimeObj.date(), state=state, configPath=str(''), colmapPath=colmapDir,method=1)
     db.session.add(projectList)
     db.session.commit()
 
     return jsonify({'status': 'success'})
 
-@api.route('/uploadImgs', methods=["POST"])
+@n2m_api.route('/uploadImgs', methods=["POST"])
 def uploadImgs():
     title = request.form.get("title")
     images = request.files.getlist("imageFiles")
 
-    imagePathHead = "./app/data/pureImages/"
+    
     proj = ProjectList.query.filter(ProjectList.title==title).first()
     title = proj.title
-    project_path = proj.projectPath
-    if len(project_path) == 0:
+    imagePathHead = proj.projectPath
+    if len(imagePathHead) == 0:
         return jsonify({'status': 'fail'})
 
     for imgs in images:
         imgs_name = os.path.basename(imgs.filename)
-        imgs.save(imagePathHead + title + '/' + imgs_name)
+        imgs.save(imagePathHead  + '/' + imgs_name)
 
     return jsonify({'status': 'success'})
 
-def colmapthread(imagePath, outputPath, projectName):
-    with app.app_context():
-        proj = ProjectList.query.filter(ProjectList.title==projectName).first()
-        proj.state = 1
-        db.session.commit()
-    imagesToNerfstudioDataset = ImagesToNerfstudioDataset(Path(imagePath), Path(outputPath))
-    # imagesToNerfstudioDataset.aquireData(Path(imagePathHead + projectName), Path(outputPathHead)) #增加数据，目前不需要
-    imagesToNerfstudioDataset.main()
+def colmapthread(imagePath,type,projectName):
+    mainF(imagePath,type)
     # print("colmap完成")
     """colmap后修改数据库"""
     with app.app_context():
         proj = ProjectList.query.filter(ProjectList.title==projectName).first()
-        proj.state = 2
+        proj.state = 1
         db.session.commit()
 
 def nerfactothread(colmapPath,finalOutputPathHead,projectName):
@@ -448,84 +357,25 @@ def nerfactothread(colmapPath,finalOutputPathHead,projectName):
         proj = ProjectList.query.filter(ProjectList.title==projectName).first()
         config_path = Path(finalOutputPathHead + projectName + "/nerfacto/" + "config.yml")
         proj.configPath = str(config_path)
-        proj.state = 3
-        db.session.commit()
-
-
-def colmapAndTrainThread(imagePath, colmapOutputPath, finalOutputPathHead, projectName):
-    """colmap部分"""
-    imagesToNerfstudioDataset = ImagesToNerfstudioDataset(Path(imagePath), Path(colmapOutputPath))
-    # imagesToNerfstudioDataset.aquireData(Path(imagePathHead + projectName), Path(outputPathHead)) #增加数据，目前不需要
-    imagesToNerfstudioDataset.main()
-    """colmap后修改数据库"""
-    with app.app_context():
-        proj = ProjectList.query.filter(ProjectList.title==projectName).first()
         proj.state = 2
         db.session.commit()
 
-    """训练部分"""
-    """调包运行"""
-    dataParser = NerfstudioDataParserConfig()
-    dataParser.getDataDir(Path(colmapOutputPath))
 
-    nowMethod = TrainerConfig(
-        method_name="nerfacto",
-        steps_per_eval_batch=500,
-        steps_per_save=2000,
-        max_num_iterations=30000,
-        mixed_precision=True,
-        pipeline=VanillaPipelineConfig(
-            datamanager=VanillaDataManagerConfig(
-                dataparser=dataParser,
-                train_num_rays_per_batch=4096,
-                eval_num_rays_per_batch=4096,
-                camera_optimizer=CameraOptimizerConfig(
-                    mode="SO3xR3", optimizer=AdamOptimizerConfig(lr=6e-4, eps=1e-8, weight_decay=1e-2)
-                ),
-            ),
-            model=NerfactoModelConfig(eval_num_rays_per_chunk=1 << 15),
-        ),
-        optimizers={
-            "proposal_networks": {
-                "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
-                "scheduler": None,
-            },
-            "fields": {
-                "optimizer": AdamOptimizerConfig(lr=1e-2, eps=1e-15),
-                "scheduler": None,
-            },
-        },
-        viewer=ViewerConfig(num_rays_per_chunk=1 << 15, quit_on_train_completion=True),
-        # vis="viewer",
-        vis="tensorboard",           #不进行前端显示
-    )
-    nowMethod.set_output_dir(Path(finalOutputPathHead + projectName))
-    starTrainMethod(nowMethod)
-    """训练完成后修改数据库"""
-    with app.app_context():
-        proj = ProjectList.query.filter(ProjectList.title==projectName).first()
-        config_path = Path(finalOutputPathHead + projectName + "/nerfacto/" + "config.yml")
-        proj.configPath = str(config_path)
-        proj.state = 3
-        db.session.commit()
-
-
-@api.route('/runColmap', methods=["POST"])
+@n2m_api.route('/runColmap', methods=["POST"])
 def runColmap():
     title = request.form.get("title")
     # outputPathHead = "./app/data/afterColmap/"
     proj = ProjectList.query.filter(ProjectList.title==title).first()
     title = proj.title
     project_path = proj.projectPath
-    outputPath = proj.colmapPath
 
     if len(project_path) == 0:
         return jsonify({'status': 'fail'})
-    thread = threading.Thread(target=colmapthread, args=(project_path, outputPath, title))
+    thread = threading.Thread(target=colmapthread, args=(project_path,0, title))
     thread.start()
     return jsonify({'status': 'success'})
 
-@api.route('/runTrain', methods=["POST"])
+@n2m_api.route('/runTrain', methods=["POST"])
 def runTrain():
     title = request.form.get("title")
     finalOutputPathHead = "./app/data/afterNerfacto/"
@@ -540,7 +390,7 @@ def runTrain():
     thread.start()
     return jsonify({'status': 'success'})
     
-@api.route('/runColmapAndTrain', methods=["POST"])
+@n2m_api.route('/runColmapAndTrain', methods=["POST"])
 def runColmapAndTrain():
     title = request.form.get("title")
     # outputPathHead = "./app/data/afterColmap/"

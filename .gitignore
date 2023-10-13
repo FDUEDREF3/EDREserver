@@ -8,3 +8,4 @@ app/data/
 =0.5.6
 EDREserver.code-workspace
 .DS_Store
+app/n2m_data

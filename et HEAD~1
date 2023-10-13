@@ -1,0 +1,536 @@
+[33mcommit 038f17904ec711298f7f7420c99a176351ef93fc[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: Eszan <619589297@qq.com>
+Date:   Fri Oct 13 17:40:16 2023 +0800
+
+    update colmap for nerf2mesh
+
+[33mcommit 44c9bbed4055ec1cd7637da4bd3d92a26bbf0583[m
+Author: Eszan <619589297@qq.com>
+Date:   Fri Oct 13 17:18:29 2023 +0800
+
+    update colmap for nerf2mesh
+
+[33mcommit bb1b294a702244185496649e9c22b5992f55c50b[m
+Author: Eszan <619589297@qq.com>
+Date:   Fri Oct 13 17:17:37 2023 +0800
+
+    update colmap for nerf2mesh
+
+[33mcommit 427c5c8cd27757540366dd00163301eafa30ee18[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Mon Jul 3 15:44:20 2023 +0800
+
+    update readme
+
+[33mcommit e7b2d78ea7d31ab1f722fe67dcb2d0e761d33640[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Mon Jul 3 15:42:56 2023 +0800
+
+    update readme
+
+[33mcommit 6d668fbeea6ee20861241a23932355a50920f156[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Thu Jun 1 14:40:32 2023 +0800
+
+    update image
+
+[33mcommit 863e4cefb0ded14d9842e1ed68d9cd8e78d03a3d[m
+Merge: a248f1e ae40ff6
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Thu Jun 1 14:37:35 2023 +0800
+
+    update readme
+
+[33mcommit a248f1e5ac017de9bb087ead8cb888b8fe13af07[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Thu Jun 1 14:31:39 2023 +0800
+
+    update readme
+
+[33mcommit ae40ff602f822e5931b43e0ee5bbf69d1a25b3fe[m
+Merge: 8e00584 e256979
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Thu Jun 1 14:28:23 2023 +0800
+
+    Merge pull request #20 from FDUEDREF3/deploy
+    
+    Deploy
+
+[33mcommit e256979cafef651e0336121c2e2e281f979ec957[m[33m ([m[1;31morigin/deploy[m[33m)[m
+Author: Eszan <619589297@qq.com>
+Date:   Thu Jun 1 14:27:28 2023 +0800
+
+    require update
+
+[33mcommit df8ee76ebf9f01bb8dfd86b927738d28f5fbf913[m
+Author: Eszan <619589297@qq.com>
+Date:   Thu Jun 1 14:22:48 2023 +0800
+
+    port
+
+[33mcommit 8e00584e2b257b6dc9e0dfb2211767fa53cb3517[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Wed May 31 09:44:32 2023 +0800
+
+    .DS_Store banished!
+
+[33mcommit 055475a04da147726edf289375cf7713d61368f6[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Wed May 31 09:41:00 2023 +0800
+
+    update requirements
+
+[33mcommit 31f97306212f13185541fb3c3e46a7438f44b057[m
+Author: Eszan <619589297@qq.com>
+Date:   Wed May 31 09:33:57 2023 +0800
+
+    update requirements
+
+[33mcommit 8402d8ac9d720360e2924d0fcb283a8478a4317f[m
+Merge: e1c6593 e764793
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Tue May 30 21:10:39 2023 +0800
+
+    Merge pull request #19 from FDUEDREF3/deploy
+    
+    Deploy
+
+[33mcommit e76479369f3c9f9e24776ccd8ff61a2116752e98[m
+Author: Eszan <619589297@qq.com>
+Date:   Tue May 30 21:06:03 2023 +0800
+
+    Path modification
+
+[33mcommit 8d6b1553efd8e75a43979aef80c2752e2a19679d[m
+Author: Eszan <619589297@qq.com>
+Date:   Tue May 30 20:49:14 2023 +0800
+
+    no inf check error
+
+[33mcommit e1c65937a394af5096cb6635345722535c1fb884[m
+Merge: bb23bd1 7f48f9e
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Mon May 29 15:35:14 2023 +0800
+
+    Merge pull request #18 from FDUEDREF3/deploy
+    
+    Deploy merge
+
+[33mcommit 7f48f9ead9bc0c5d1f37866effe9a49fc62766be[m
+Author: Eszan <619589297@qq.com>
+Date:   Mon May 29 15:33:05 2023 +0800
+
+    合并colmap和train
+
+[33mcommit 4312e9f62a52f2c225fcbf133a1eb13f50f76f8d[m
+Author: Eszan <619589297@qq.com>
+Date:   Thu May 25 14:03:03 2023 +0800
+
+    test add colmap and train
+
+[33mcommit a65896fe36940b5ce072758f3ea8036d2edd5c08[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Thu May 25 13:50:00 2023 +0800
+
+    test
+
+[33mcommit 95dd5d3b4c18cb1988fdf2d0acc3629278ce8505[m
+Author: Eszan <619589297@qq.com>
+Date:   Thu May 25 13:30:09 2023 +0800
+
+    更改路径
+
+[33mcommit bb23bd122654c6184576432b914c05c0d5f2986f[m
+Merge: c0f33a8 562618b
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Fri May 19 19:57:17 2023 +0800
+
+    Merge pull request #17 from FDUEDREF3/dcy_test
+    
+    环境文件
+
+[33mcommit 562618b56a34fce063cbcc80ca4bd2db21e75dfe[m[33m ([m[1;31morigin/dcy_test[m[33m)[m
+Author: Eszan <619589297@qq.com>
+Date:   Fri May 19 19:56:36 2023 +0800
+
+    环境文件
+
+[33mcommit c0f33a8732bf8da014bd390ef8935c733c524131[m
+Merge: f146ac3 165cb8e
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Mon May 15 18:13:18 2023 +0800
+
+    Merge pull request #16 from FDUEDREF3/dcy_test
+    
+    限制端口，增加异常处理
+
+[33mcommit 165cb8e8889d570a46405fae02649f3d30cd5c94[m
+Author: Eszan <619589297@qq.com>
+Date:   Mon May 15 18:12:31 2023 +0800
+
+    限制同时运行websocket端口为两个
+
+[33mcommit 22c6e962fbfb98aac41181a32ae1e57135f6fb4e[m
+Author: Eszan <619589297@qq.com>
+Date:   Mon May 15 17:35:08 2023 +0800
+
+    增加异常处理
+
+[33mcommit f146ac3f8a2eb941bcf76aca45f92c5afef9e64b[m
+Merge: 469dcbc ecff3f1
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Sat May 13 16:02:09 2023 +0800
+
+    Merge pull request #14 from FDUEDREF3/dcy_test
+    
+    解决读取config.yaml的问题
+
+[33mcommit ecff3f15ab9b2c3cacb032666bed3b47748277ad[m
+Author: Eszan <619589297@qq.com>
+Date:   Sat May 13 15:49:00 2023 +0800
+
+    解决读取config.yaml的问题
+
+[33mcommit 469dcbc87038e207441ae4751c63ae29d9dffcbb[m
+Merge: 46d3e9b 88ba9f5
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Fri May 12 21:59:20 2023 +0800
+
+    Merge pull request #13 from FDUEDREF3/dcy_test
+    
+    切分功能，优化上传图片逻辑
+
+[33mcommit 88ba9f59b574037ac8de4cc94bd3cc88699d08b1[m
+Author: Eszan <619589297@qq.com>
+Date:   Fri May 12 21:57:45 2023 +0800
+
+    切分功能，优化上传图片逻辑
+
+[33mcommit 46d3e9b4f625eedae498a9d2a5816e21e9a8aff9[m
+Merge: 247d65e db5e7c7
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Thu May 11 18:55:04 2023 +0800
+
+    Merge pull request #12 from FDUEDREF3/dcy_test
+    
+    修改train方式，与前端适配
+
+[33mcommit db5e7c7fd7a61fd574ae2e506b815a8d21439d11[m
+Author: Eszan <619589297@qq.com>
+Date:   Thu May 11 18:54:28 2023 +0800
+
+    修改train方式，与前端适配
+
+[33mcommit 247d65e6db98a5ccffc04477baf916946c65f444[m
+Merge: 45087c5 ce4d70f
+Author: Sophus <130123455+SophusDavid@users.noreply.github.com>
+Date:   Mon May 8 21:09:54 2023 +0800
+
+    Merge pull request #11 from FDUEDREF3/dcy_test
+    
+    Dcy test
+
+[33mcommit ce4d70fa3498c7b6f73f60efcb88713128a4630e[m
+Author: Eszan <619589297@qq.com>
+Date:   Mon May 8 21:08:37 2023 +0800
+
+    启动websocket
+
+[33mcommit b3001647996c00ba316b0e5879a745ecbd51b347[m
+Merge: e2bf55c 45087c5
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Sat May 6 20:33:32 2023 +0800
+
+    Merge pull request #10 from FDUEDREF3/master
+    
+    delete unrelated files
+
+[33mcommit 45087c5a669d7b4fc27844f4e1d7309b4beb8686[m
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Sat May 6 12:30:54 2023 +0000
+
+    Delete =1.0.4
+
+[33mcommit f4d578e9ef36fed26de15a875fe1e172742d5a60[m
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Sat May 6 12:30:42 2023 +0000
+
+    Delete =0.4.8
+
+[33mcommit a5ad917c7a6736fb7f8784b83065d4d68087404a[m
+Merge: e8488d4 e2bf55c
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Sat May 6 20:29:18 2023 +0800
+
+    Merge pull request #9 from FDUEDREF3/dcy_test
+    
+    实现前端渲染，环境调整
+
+[33mcommit e2bf55c8c776b8590e92acfd8a34085d56029169[m
+Author: Eszan <619589297@qq.com>
+Date:   Sat May 6 20:22:34 2023 +0800
+
+    实现前端渲染，环境调整
+
+[33mcommit e8488d489d83b26896a59884c5f06838248af793[m
+Merge: 60a31a1 d8b8893
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Fri May 5 15:58:05 2023 +0800
+
+    Merge pull request #8 from FDUEDREF3/dcy_test
+    
+    仓库调整
+
+[33mcommit d8b889304c2c8c1ac8962d0bc90c7ee676a17cd5[m
+Author: Eszan <619589297@qq.com>
+Date:   Fri May 5 15:57:00 2023 +0800
+
+    仓库调整
+
+[33mcommit 9fcd6d1ae08415435a58ccefd1118bc364ef1267[m
+Author: Eszan <619589297@qq.com>
+Date:   Fri May 5 15:56:48 2023 +0800
+
+    仓库调整
+
+[33mcommit 60a31a191a5bee2987ee189b79301991d57bf4fd[m
+Merge: 0c046e2 d611c00
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Fri May 5 14:13:30 2023 +0800
+
+    Merge pull request #7 from FDUEDREF3/dcy_test
+    
+    viewer启动
+
+[33mcommit d611c0033f5f02660738240df0846052457013f4[m
+Merge: 648ee00 8ac7fba
+Author: Eszan <619589297@qq.com>
+Date:   Fri May 5 14:11:02 2023 +0800
+
+    处理冲突
+
+[33mcommit 648ee005911b0830b78dadb66a46b54223fce8cb[m
+Merge: 738ce65 97d9dc1
+Author: Eszan <619589297@qq.com>
+Date:   Fri May 5 13:55:59 2023 +0800
+
+    解决版本冲突
+
+[33mcommit 738ce65926df92407b488c8025109dc6a52a8e75[m
+Author: Eszan <619589297@qq.com>
+Date:   Fri May 5 13:39:05 2023 +0800
+
+    delete imgs
+
+[33mcommit 7282ab1ba462cc929aa978433ff45713db7ad146[m
+Author: Eszan <619589297@qq.com>
+Date:   Fri May 5 13:38:54 2023 +0800
+
+    delete imgs
+
+[33mcommit 5a655912c16c304ea6f48a2c23405e2d9a8492fa[m
+Author: Eszan <619589297@qq.com>
+Date:   Fri May 5 13:38:39 2023 +0800
+
+    delete imgs
+
+[33mcommit da3684e78e35ca405fadeb89961c6081fc8e9e07[m
+Author: Eszan <619589297@qq.com>
+Date:   Fri May 5 13:33:59 2023 +0800
+
+    删除数据
+
+[33mcommit de69608ee93582e8202f5320cc3fd8553ebe9fcb[m
+Author: Eszan <619589297@qq.com>
+Date:   Fri May 5 13:32:23 2023 +0800
+
+    viewer启动
+
+[33mcommit 0c046e24d5a9b04635f401c13ef8484244062ad0[m
+Merge: 6b2e7e0 8ac7fba
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Wed May 3 15:59:32 2023 +0800
+
+    Merge pull request #6 from FDUEDREF3/dcy_test
+    
+    修改数据库操作，多线程运行训练
+
+[33mcommit 8ac7fbad4e168e7df784aa83718d713ca4f15365[m
+Author: Eszan <619589297@qq.com>
+Date:   Wed May 3 15:58:51 2023 +0800
+
+    修改数据库操作，多线程运行训练
+
+[33mcommit 97d9dc16d45f4f89bee712fd82aa2ed7a83b8c4f[m
+Author: Eszan <619589297@qq.com>
+Date:   Wed May 3 15:58:51 2023 +0800
+
+    修改数据库操作，多线程运行训练
+
+[33mcommit 6b2e7e008e3374c34c999862b934207ce8aa61cf[m
+Merge: d582d43 0dec82d
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Wed May 3 13:50:04 2023 +0800
+
+    Merge pull request #5 from FDUEDREF3/dcy_test
+    
+    解决跨域问题
+
+[33mcommit 0dec82d002b6a1c0bb26609c031ff1193d07c836[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Wed May 3 13:48:12 2023 +0800
+
+    解决跨域问题
+
+[33mcommit a9c2d8b6ccb3a4f8a1d21f550e2fa3590db45a7b[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Wed May 3 13:48:12 2023 +0800
+
+    解决跨域问题
+
+[33mcommit d582d4335e8ff364964bc6d363fcd628fdee58f2[m
+Merge: bacde04 0f11234
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Mon May 1 21:01:03 2023 +0800
+
+    Merge pull request #4 from FDUEDREF3/dcy_test
+    
+    后端实现训练以及colmap
+
+[33mcommit 0f112344208504ba561398bb1ce18e2a96dce6c2[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Mon May 1 20:57:54 2023 +0800
+
+    实现后端运行colmap，实现nerfacto训练
+
+[33mcommit ebe63ec3e67069e420f5b7fca099b3b1ad9bda58[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Mon May 1 20:57:54 2023 +0800
+
+    实现后端运行colmap，实现nerfacto训练
+
+[33mcommit 78527eb6a7be6572ea3ee1ec1426e189ac6bc547[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Tue Apr 25 18:07:53 2023 +0800
+
+    修改接口逻辑
+
+[33mcommit 21bf5b596082091c7c1d390e410574dd70e75a45[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Tue Apr 25 18:07:53 2023 +0800
+
+    修改接口逻辑
+
+[33mcommit bacde0497d2e12bd6d7081cf756252012dd6c566[m
+Merge: 51de9a5 0b3781e
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Mon Apr 24 13:57:42 2023 +0800
+
+    Merge pull request #3 from FDUEDREF3/dcy_test
+    
+    数据库文件添加，工具文件增加
+
+[33mcommit 0b3781e66fa57409e8bdffe12eae4147706e76f8[m
+Merge: 3dd1b49 6d6878b
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Mon Apr 24 13:55:27 2023 +0800
+
+    Merge remote-tracking branch 'origin/dcy_test' into dcy_test
+
+[33mcommit ddc832f86f8c6379d388cca23af0ca96972c2ae0[m
+Merge: 3dd1b49 c235d0d
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Mon Apr 24 13:55:27 2023 +0800
+
+    Merge remote-tracking branch 'origin/dcy_test' into dcy_test
+
+[33mcommit 3dd1b4982d8bdc856c2c96261f971ae9ed97ad0d[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Mon Apr 24 13:54:53 2023 +0800
+
+    数据库文件添加，工具文件增加
+
+[33mcommit 51de9a55795edcccc74d1c66e81a637d67863927[m
+Merge: 64faad4 6d6878b
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Sun Apr 23 18:20:43 2023 +0800
+
+    Merge pull request #2 from FDUEDREF3/dcy_test
+    
+    修改启动逻辑，修改ZMQWebSocketBridge以及handler调用
+
+[33mcommit 6d6878bf87edc5963213657a7edb208b9f7c76f4[m
+Merge: a1425ad 64faad4
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Sun Apr 23 18:20:35 2023 +0800
+
+    Merge branch 'master' into dcy_test
+
+[33mcommit c235d0d942ade32fb95e38a8682732c8cc8f90d0[m
+Merge: a1425ad ebd63ce
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Sun Apr 23 18:20:35 2023 +0800
+
+    Merge branch 'master' into dcy_test
+
+[33mcommit a1425ad785ce04bcdacf610b175b660eb6052e43[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Sun Apr 23 18:18:05 2023 +0800
+
+    修改启动逻辑，修改ZMQWebSocketBridge以及handler调用
+
+[33mcommit 64faad46374cf0e1aae540a8cd0e9a21c6813fc5[m
+Merge: b685bd1 5796c8b
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Sat Apr 22 22:15:37 2023 +0800
+
+    Merge pull request #1 from FDUEDREF3/dcy_test
+    
+    修改WebSocketHandler，flask启动部分
+
+[33mcommit ebd63ce333a2af742bb05488482d6e6aac0045e0[m
+Merge: b685bd1 5796c8b
+Author: ESZAN <61010295+ESZAN@users.noreply.github.com>
+Date:   Sat Apr 22 22:15:37 2023 +0800
+
+    Merge pull request #1 from FDUEDREF3/dcy_test
+    
+    修改WebSocketHandler，flask启动部分
+
+[33mcommit 5796c8bd1cce31b13fa4120a224554ff6b47c7ee[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Sat Apr 22 21:54:12 2023 +0800
+
+    修改WebSocketHandler，flask启动部分
+
+[33mcommit b685bd1df920455ab4de576910d2c63559211c98[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Sat Apr 22 21:58:44 2023 +0800
+
+    Revert "数据库记录增加以及查找"
+    
+    This reverts commit 49d62577
+
+[33mcommit 8969e07e48c0281596650bc4001a2b2ecfd55961[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Sat Apr 22 21:54:12 2023 +0800
+
+    数据库记录增加以及查找
+
+[33mcommit 49d6257752ae916d5252b363ce351bc3c354d50a[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Fri Apr 21 20:18:11 2023 +0800
+
+    数据库记录增加以及查找
+
+[33mcommit 65aac79129c09250ccb1c0da83834494cda58326[m[33m ([m[1;31morigin/dtw_dev[m[33m)[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Sat Apr 15 00:08:23 2023 +0800
+
+    database
+
+[33mcommit f4ff001f1054859ef1586247da905b41b9630ea3[m
+Author: 619589297@qq.com <24320182203185@stu.xmu.edu.cn>
+Date:   Tue Apr 11 14:47:46 2023 +0800
+
+    first commit
