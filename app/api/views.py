@@ -343,7 +343,7 @@ def createProject():
     imagePathHead = "./app/data/pureImages/"
     outputPathHead = "./app/data/afterColmap/"
     if not os.path.exists("./app/data"):
-        os.mkdir("./app.data")
+        os.mkdir("./app/data")
     if not os.path.exists(avatarPathHead):
         os.mkdir(avatarPathHead)
     if not os.path.exists(imagePathHead):
