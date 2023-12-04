@@ -53,10 +53,18 @@ from app.nerfstudio.viewer.viser.messages import (
     SaveCheckpointMessage,
     TimeConditionMessage,
     TrainingStateMessage,
+    SampleScaleMessage,
+    CalculateLengthMessage,
 )
 
 if TYPE_CHECKING:
     from app.nerfstudio.engine.trainer import Trainer
+
+import cv2
+from app.nerfstudio.cameras.cameras import Cameras, CameraType
+import math
+from app.nerfstudio.viewer.server.utils import get_intrinsics_matrix_and_camera_to_world_h
+# from app.nerfstudio.viewer.server.render_state_machine import _render_img
 
 CONSOLE = Console(width=120)
 
@@ -130,6 +138,8 @@ class ViewerState:
         self.viser_server.register_handler(CameraPathOptionsRequest, self._handle_camera_path_option_request)
         self.viser_server.register_handler(CameraPathPayloadMessage, self._handle_camera_path_payload)
         self.viser_server.register_handler(CropParamsMessage, self._handle_crop_params_message)
+        self.viser_server.register_handler(SampleScaleMessage, self._handle_sample_scale_message)
+        self.viser_server.register_handler(CalculateLengthMessage, self._handle_calculate_message)
         if self.include_time:
             self.viser_server.use_time_conditioning()
             self.viser_server.register_handler(TimeConditionMessage, self._handle_time_condition_message)
@@ -229,6 +239,165 @@ class ViewerState:
         camera_paths_directory = self.datapath / "camera_paths"
         camera_paths_directory.mkdir(parents=True, exist_ok=True)
         write_to_json(camera_paths_directory / camera_path_filename, camera_path)
+    
+    def _handle_sample_scale_message(self, message: NerfstudioMessage) -> None:
+        ''''''
+        assert isinstance(message, SampleScaleMessage)
+        # print(message.samplePoints)
+        samplePoints = message.samplePoints
+        samplePoints_int = [round(x) for x in samplePoints]
+        real_sample_distance = float(message.real_sample_distance)
+
+        # self.render_statemachine = RenderStateMachine(self)
+        intrinsics_matrix,camera_to_world_matrix=self._render_img(message)
+        # print(intrinsics_matrix,camera_to_world_matrix)
+        depthMap = self.getDepthMap(intrinsics_matrix,camera_to_world_matrix)
+        # print(depthMap)
+        world_points = []
+        t1 = self.trans(samplePoints_int[0],samplePoints_int[1], depthMap, camera_to_world_matrix, intrinsics_matrix)
+        world_points.append(np.array(t1))
+        t2 = self.trans(samplePoints_int[2],samplePoints_int[3], depthMap, camera_to_world_matrix, intrinsics_matrix)
+        world_points.append(np.array(t2))
+        model_distance = self.distance(world_points[0][0]-world_points[1][0],world_points[0][1]-world_points[1][1],world_points[0][2]-world_points[1][2])
+        self.render_statemachine.scale = real_sample_distance/model_distance
+        print("scale: "+ str(self.render_statemachine.scale))
+        
+    def _handle_calculate_message(self, message: NerfstudioMessage) -> None:
+        ''''''
+        assert isinstance(message, CalculateLengthMessage)
+        name = message.name
+        if self.render_statemachine.scale < 0:
+            self.viser_server.send_real_length_message(name, -1)
+        else:
+            print("scale: "+ str(self.render_statemachine.scale))
+            
+            samplePoints = message.samplePoints
+            samplePoints_int = [round(x) for x in samplePoints]
+            intrinsics_matrix,camera_to_world_matrix=self._render_img(message)
+            depthMap = self.getDepthMap(intrinsics_matrix,camera_to_world_matrix)
+            world_points = []
+            t1 = self.trans(samplePoints_int[0],samplePoints_int[1], depthMap, camera_to_world_matrix, intrinsics_matrix)
+            world_points.append(np.array(t1))
+            t2 = self.trans(samplePoints_int[2],samplePoints_int[3], depthMap, camera_to_world_matrix, intrinsics_matrix)
+            world_points.append(np.array(t2))
+            world_distance = self.distance(world_points[0][0]-world_points[1][0],world_points[0][1]-world_points[1][1],world_points[0][2]-world_points[1][2])
+            real_distance = world_distance * self.render_statemachine.scale
+            print('real distance:'+str(real_distance))
+            self.viser_server.send_real_length_message(real_distance, name)
+            
+    def distance(self, x,y,z):
+        return math.sqrt(pow(x,2)+pow(y,2)+pow(z,2))
+
+    def trans(self, x,y,depth,extrinsic,intrinsic):
+        depth = depth.detach().cpu().numpy()
+        depth = depth[y][x][0]
+        extrinsic = extrinsic.detach().cpu().numpy()
+        intrinsic=intrinsic.detach().cpu().numpy()
+        pix = np.zeros((3, 1))
+        pix[0,0] = x
+        pix[1,0] = y
+        pix[2,0] = 1
+        intr = np.linalg.inv(intrinsic)
+        image_r = extrinsic[0:3, 0:3]
+        image_t = extrinsic[0:3, 3]
+        image_rT = np.linalg.inv(image_r)
+        depth_pix = np.dot(depth, pix)
+        tmp = np.matmul(intr,depth_pix)
+        image_t = image_t.reshape(3, 1)
+        aftert = np.subtract(tmp,image_t)
+        world_xyz = np.matmul(image_rT, aftert)
+        # print(tmp.shape)
+        # print(image_t)
+        return world_xyz
+        
+    def getDepthMap(self, intrinsics_matrix, camera_to_world_matrix):
+        model = self.render_statemachine.viewer.get_model()
+        
+        camera_to_world = camera_to_world_matrix[:3, :]
+        camera_to_world = torch.stack(
+            [
+                camera_to_world[0, :],
+                camera_to_world[2, :],
+                camera_to_world[1, :],
+            ],
+            dim=0,
+        )
+        camera_type = CameraType.PERSPECTIVE
+        camera = Cameras(
+            fx=intrinsics_matrix[0, 0],
+            fy=intrinsics_matrix[1, 1],
+            cx=intrinsics_matrix[0, 2],
+            cy=intrinsics_matrix[1, 2],
+            camera_type=camera_type,
+            camera_to_worlds=camera_to_world[None, ...],
+            times=torch.tensor([self.render_statemachine.viewer.control_panel.time], dtype=torch.float32),
+        )
+        camera = camera.to(model.device)
+        camera_ray_bundle = camera.generate_rays(camera_indices=0, aabb_box=model.render_aabb)
+        with torch.no_grad():
+            outputs = model.get_outputs_for_camera_ray_bundle(camera_ray_bundle)
+        output_type = "depth"
+        output = outputs[output_type]
+        output = output / (torch.max(output) + 1e-6)
+        output = 1 - output
+        return output
+        
+    def _render_img(self, message: SampleScaleMessage):
+        """Takes the current camera, generates rays, and renders the iamge
+        
+        Args:
+            cam_msg: the camera message to render
+        """
+
+        image_height, image_width = self._calculate_image_res(message.aspect)
+        print(image_height,image_width)
+    
+        intrinsics_matrix, camera_to_world_h = get_intrinsics_matrix_and_camera_to_world_h(
+            message, image_height=image_height, image_width=image_width
+        )
+        print(intrinsics_matrix)
+        print(camera_to_world_h)
+
+        return intrinsics_matrix, camera_to_world_h
+        
+    def _calculate_image_res(self, aspect_ratio: float) -> Tuple[int, int]:
+        """Calculate the maximum image height that can be rendered in the time budget
+
+        Args:
+            apect_ratio: the aspect ratio of the current view
+        Returns:
+            image_height: the maximum image height that can be rendered in the time budget
+            image_width: the maximum image width that can be rendered in the time budget
+        """
+        # max_res = self.viewer.control_panel.max_res
+        max_res = 2048
+        # if self.render_statemachine.state == "high":
+            # high res is always static
+        image_height = max_res
+        image_width = int(image_height * aspect_ratio)
+        if image_width > max_res:
+            image_width = max_res
+            image_height = int(image_width / aspect_ratio)
+        # elif self.render_statemachine.state in ("low_move", "low_static"):
+        #     if EventName.VIS_RAYS_PER_SEC.value in GLOBAL_BUFFER["events"]:
+        #         vis_rays_per_sec = GLOBAL_BUFFER["events"][EventName.VIS_RAYS_PER_SEC.value]["avg"]
+        #     else:
+        #         vis_rays_per_sec = 100000
+        #     target_fps = self.render_statemachine.target_fps
+        #     num_vis_rays = vis_rays_per_sec / target_fps
+        #     image_height = (num_vis_rays / aspect_ratio) ** 0.5
+        #     image_height = int(round(image_height, -1))
+        #     image_height = max(min(max_res, image_height), 30)
+        #     image_width = int(image_height * aspect_ratio)
+        #     if image_width > max_res:
+        #         image_width = max_res
+        #         image_height = int(image_width / aspect_ratio)
+        # else:
+        #     raise ValueError(f"Invalid state: {self.render_statemachine.state}")
+
+        return image_height, image_width
+
+        
 
     def _handle_crop_params_message(self, message: NerfstudioMessage) -> None:
         """Handle crop parameters message from viewer."""

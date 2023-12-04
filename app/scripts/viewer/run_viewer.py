@@ -11,7 +11,7 @@ from pathlib import Path
 import tyro
 from rich.console import Console
 import sys
-sys.path.append("/home/edre/code/EDREserver")
+sys.path.append("/home/dcy/code/EDREserver")
 
 from app.nerfstudio.configs.base_config import ViewerConfig
 from app.nerfstudio.engine.trainer import TrainerConfig

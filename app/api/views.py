@@ -7,6 +7,7 @@ from app.models.projectList import ProjectList
 from datetime import datetime
 from pathlib import Path
 import os
+import cv2
 
 import multiprocessing
 from werkzeug.datastructures import FileStorage
@@ -16,7 +17,7 @@ import threading
 import dill
 from multiprocessing import context
 import subprocess
-
+import app.scripts.Equirec2Perspec as E2P 
 
 from app.nerfstudio.process_data.video_to_nerfstudio_dataset import VideoToNerfstudioDataset 
 from app.nerfstudio.process_data.images_to_nerstudio_dataset import ImagesToNerfstudioDataset
@@ -76,6 +77,28 @@ def addData():
     # db.session.delete(article)
     # db.session.commit()
     return "数据操作成功"
+
+
+
+def getAllPerImgs(imgpath):
+    equ = E2P.Equirectangular(imgpath)
+    imgList=[]
+    for j in range(0,6):
+        img = equ.GetPerspective(80,j*60,0, 1080, 1920) # Specify parameters(FOV, theta, phi, height, width)
+        imgList.append(img)    
+    # img = equ.GetPerspective(60,0, 90, 720, 1080) # Specify parameters(FOV, theta, phi, height, width)
+    # imgList.append(img)
+    # img = equ.GetPerspective(60,0, 270, 720, 1080) # Specify parameters(FOV, theta, phi, height, width)
+    # imgList.append(img)
+    return imgList
+def writeImgs(imgpath,imgList):
+    pathdic=os.path.split(imgpath)
+    if os.path.exists(os.path.join(pathdic[0],'TransPer')) is not True:
+        os.mkdir(os.path.join(pathdic[0],'TransPer'))
+    for img,idx in zip(imgList,range(0,len(imgList))):
+        cv2.imwrite(os.path.join(os.path.join(pathdic[0],'TransPer'), pathdic[1][:pathdic[1].find('.')]+'_'+str(idx))+pathdic[1][pathdic[1].find('.'):],img)
+
+
 
 
 @api.route('/getAllProjects', methods=["get"])   #获取所有项目
@@ -263,7 +286,7 @@ def startViewer():
         return jsonify({'status': 'fail', 'message':'database error', 'websocket_url':''})
     if len(config_path) == 0:
         return jsonify({'status': 'fail', 'message':'empty data', 'websocket_url':''})
-    address = "10.177.35.162"
+    address = "10.177.35.76"
     port = ''
     """限制端口"""
 
@@ -381,10 +404,20 @@ def uploadImgs():
 
     return jsonify({'status': 'success'})
 
-def colmapthread(imagePath, outputPath, projectName):
+def colmapthread(imagePath, outputPath, projectName,pano):
+    
+    if pano:
+        imgpathList=os.listdir(imagePath)
+        for i in imgpathList:
+            imgpath1=os.path.join(imagePath,i)
+            imgList=getAllPerImgs(imgpath1)
+            writeImgs(imgpath1,imgList)
+        # 如果是全景图像则修改imagepath位置
+        imagePath = os.path.join(imagePath,'TransPer')
+
     with app.app_context():
         proj = ProjectList.query.filter(ProjectList.title==projectName).first()
-        proj.state = 1
+        proj.state = 0
         db.session.commit()
     imagesToNerfstudioDataset = ImagesToNerfstudioDataset(Path(imagePath), Path(outputPath))
     # imagesToNerfstudioDataset.aquireData(Path(imagePathHead + projectName), Path(outputPathHead)) #增加数据，目前不需要
@@ -393,7 +426,7 @@ def colmapthread(imagePath, outputPath, projectName):
     """colmap后修改数据库"""
     with app.app_context():
         proj = ProjectList.query.filter(ProjectList.title==projectName).first()
-        proj.state = 2
+        proj.state = 1
         db.session.commit()
 
 def nerfactothread(colmapPath,finalOutputPathHead,projectName):
@@ -448,19 +481,27 @@ def nerfactothread(colmapPath,finalOutputPathHead,projectName):
         proj = ProjectList.query.filter(ProjectList.title==projectName).first()
         config_path = Path(finalOutputPathHead + projectName + "/nerfacto/" + "config.yml")
         proj.configPath = str(config_path)
-        proj.state = 3
+        proj.state = 2
         db.session.commit()
 
 
-def colmapAndTrainThread(imagePath, colmapOutputPath, finalOutputPathHead, projectName):
+def colmapAndTrainThread(imagePath, colmapOutputPath, finalOutputPathHead, projectName,pano):
     """colmap部分"""
+    if pano:
+        imgpathList=os.listdir(imagePath)
+        for i in imgpathList:
+            imgpath1=os.path.join(imagePath,i)
+            imgList=getAllPerImgs(imgpath1)
+            writeImgs(imgpath1,imgList)
+        # 如果是全景图像则修改imagepath位置
+        imagePath = os.path.join(imagePath,'TransPer')
     imagesToNerfstudioDataset = ImagesToNerfstudioDataset(Path(imagePath), Path(colmapOutputPath))
     # imagesToNerfstudioDataset.aquireData(Path(imagePathHead + projectName), Path(outputPathHead)) #增加数据，目前不需要
     imagesToNerfstudioDataset.main()
     """colmap后修改数据库"""
     with app.app_context():
         proj = ProjectList.query.filter(ProjectList.title==projectName).first()
-        proj.state = 2
+        proj.state = 1
         db.session.commit()
 
     """训练部分"""
@@ -506,13 +547,17 @@ def colmapAndTrainThread(imagePath, colmapOutputPath, finalOutputPathHead, proje
         proj = ProjectList.query.filter(ProjectList.title==projectName).first()
         config_path = Path(finalOutputPathHead + projectName + "/nerfacto/" + "config.yml")
         proj.configPath = str(config_path)
-        proj.state = 3
+        proj.state = 2
         db.session.commit()
 
 
 @api.route('/runColmap', methods=["POST"])
 def runColmap():
     title = request.form.get("title")
+    tpano = int(request.form.get("pano"))
+    pano = False
+    if tpano>0:
+        pano=True
     # outputPathHead = "./app/data/afterColmap/"
     proj = ProjectList.query.filter(ProjectList.title==title).first()
     title = proj.title
@@ -521,7 +566,7 @@ def runColmap():
 
     if len(project_path) == 0:
         return jsonify({'status': 'fail'})
-    thread = threading.Thread(target=colmapthread, args=(project_path, outputPath, title))
+    thread = threading.Thread(target=colmapthread, args=(project_path, outputPath, title,pano))
     thread.start()
     return jsonify({'status': 'success'})
 
@@ -543,6 +588,12 @@ def runTrain():
 @api.route('/runColmapAndTrain', methods=["POST"])
 def runColmapAndTrain():
     title = request.form.get("title")
+    tpano = int(request.form.get("pano"))
+    print(tpano)
+    pano = False
+    if tpano>0:
+        pano=True
+    print(pano)
     # outputPathHead = "./app/data/afterColmap/"
     proj = ProjectList.query.filter(ProjectList.title==title).first()
     title = proj.title
@@ -552,6 +603,6 @@ def runColmapAndTrain():
 
     if len(project_path) == 0:
         return jsonify({'status': 'fail'})
-    thread = threading.Thread(target=colmapAndTrainThread, args=(project_path, outputPath, finalOutputPathHead, title))
+    thread = threading.Thread(target=colmapAndTrainThread, args=(project_path, outputPath, finalOutputPathHead, title,pano))
     thread.start()
     return jsonify({'status': 'success'})

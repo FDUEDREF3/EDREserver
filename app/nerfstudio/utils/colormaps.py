@@ -69,6 +69,7 @@ def apply_depth_colormap(
     far_plane = far_plane or float(torch.max(depth))
 
     depth = (depth - near_plane) / (far_plane - near_plane + 1e-10)
+    # depth = torch.clip(depth, 0, 1)
     depth = torch.clip(depth, 0, 1)
     # depth = torch.nan_to_num(depth, nan=0.0) # TODO(ethan): remove this
 

@@ -94,6 +94,8 @@ class ControlPanel:
 
     def _train_speed_cb(self) -> None:
         """Callback for when the train speed is changed"""
+        self._train_util.value = 0.95
+        self._max_res.value = 2048
         if self.train_speed == "Fast":
             self._train_util.value = 0.95
             self._max_res.value = 256

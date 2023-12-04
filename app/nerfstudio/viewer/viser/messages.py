@@ -241,3 +241,56 @@ class TimeConditionMessage(NerfstudioMessage):
 
     time: float
     """ Time conditioning value """
+
+@dataclasses.dataclass
+class SampleScaleMessage(NerfstudioMessage):
+    """ """
+
+    samplePoints: Tuple[float,float,float,float]
+    real_sample_distance: float
+    
+    aspect: float
+    """ Aspect ratio of the camera """
+    render_aspect: float
+    """ Aspect ratio of the render window """
+    fov: float
+    """ Field of view of the camera """
+    matrix: Tuple[
+        float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float
+    ]
+    """ Camera matrix """
+    camera_type: Literal["perspective", "fisheye", "equirectangular"]
+    """ Camera type """
+    is_moving: bool
+    """ True if the camera is moving, False otherwise """
+    timestamp: int
+    """JSON computed by the camera class"""
+
+@dataclasses.dataclass
+class CalculateLengthMessage(NerfstudioMessage):
+    """ """
+    name: str
+    samplePoints: Tuple[float,float,float,float]
+    
+    aspect: float
+    """ Aspect ratio of the camera """
+    render_aspect: float
+    """ Aspect ratio of the render window """
+    fov: float
+    """ Field of view of the camera """
+    matrix: Tuple[
+        float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float
+    ]
+    """ Camera matrix """
+    camera_type: Literal["perspective", "fisheye", "equirectangular"]
+    """ Camera type """
+    is_moving: bool
+    """ True if the camera is moving, False otherwise """
+    timestamp: int
+    """JSON computed by the camera class"""
+
+@dataclasses.dataclass
+class ReaLengthMessage(NerfstudioMessage):
+    """real length message."""
+    name: str
+    real_world_distance: float

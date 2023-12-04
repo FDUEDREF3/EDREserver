@@ -262,6 +262,7 @@ class DepthRenderer(nn.Module):
         Returns:
             Outputs of depth values.
         """
+        self.method = "expected"
 
         if self.method == "median":
             steps = (ray_samples.frustums.starts + ray_samples.frustums.ends) / 2
@@ -290,7 +291,9 @@ class DepthRenderer(nn.Module):
             else:
                 depth = torch.sum(weights * steps, dim=-2) / (torch.sum(weights, -2) + eps)
 
-            depth = torch.clip(depth, steps.min(), steps.max())
+            # depth = torch.clip(depth, steps.min(), steps.max())
+            
+            # depth = torch.clip(depth, 0, 255)
 
             return depth
 

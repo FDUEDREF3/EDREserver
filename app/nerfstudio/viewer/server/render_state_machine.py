@@ -29,7 +29,7 @@ from app.nerfstudio.utils import writer
 from app.nerfstudio.utils.writer import GLOBAL_BUFFER, EventName, TimeWriter
 from app.nerfstudio.viewer.server import viewer_utils
 from app.nerfstudio.viewer.server.utils import get_intrinsics_matrix_and_camera_to_world_h
-from app.nerfstudio.viewer.viser.messages import CameraMessage
+from app.nerfstudio.viewer.viser.messages import CameraMessage,SampleScaleMessage
 
 if TYPE_CHECKING:
     from app.nerfstudio.viewer.server.viewer_state import ViewerState
@@ -79,6 +79,7 @@ class RenderStateMachine(threading.Thread):
         self.viewer = viewer
         self.interrupt_render_flag = False
         self.daemon = True
+        self.scale = -1 #真实长度比世界坐标尺度
 
     def action(self, action: RenderAction):
         """Takes an action and updates the state machine
@@ -106,10 +107,19 @@ class RenderStateMachine(threading.Thread):
         if self.state == "high" and self.next_action.action in ("move", "rerender"):
             self.interrupt_render_flag = True
         self.render_trigger.set()
+    
+    def _get_intri_and_extri(self, cam_msg: SampleScaleMessage):
+        image_height, image_width = self._calculate_image_res(cam_msg.aspect)
+        intrinsics_matrix, camera_to_world_h = get_intrinsics_matrix_and_camera_to_world_h(
+            cam_msg, image_height=image_height, image_width=image_width
+        )
+        return intrinsics_matrix,camera_to_world_h
+
+
 
     def _render_img(self, cam_msg: CameraMessage):
         """Takes the current camera, generates rays, and renders the iamge
-
+        
         Args:
             cam_msg: the camera message to render
         """
@@ -123,10 +133,15 @@ class RenderStateMachine(threading.Thread):
         )
 
         image_height, image_width = self._calculate_image_res(cam_msg.aspect)
+        print(image_height,image_width)
+        # image_height = 1080
+        # image_width = 1920
 
         intrinsics_matrix, camera_to_world_h = get_intrinsics_matrix_and_camera_to_world_h(
             cam_msg, image_height=image_height, image_width=image_width
         )
+        # print(intrinsics_matrix)
+        # print(camera_to_world_h)
 
         camera_to_world = camera_to_world_h[:3, :]
         camera_to_world = torch.stack(
@@ -250,7 +265,8 @@ class RenderStateMachine(threading.Thread):
             image_height: the maximum image height that can be rendered in the time budget
             image_width: the maximum image width that can be rendered in the time budget
         """
-        max_res = self.viewer.control_panel.max_res
+        # max_res = self.viewer.control_panel.max_res
+        max_res = 2048
         if self.state == "high":
             # high res is always static
             image_height = max_res

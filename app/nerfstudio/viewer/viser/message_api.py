@@ -484,6 +484,14 @@ class MessageApi(abc.ABC):
             step: The current step.
         """
         self._queue(messages.StatusMessage(eval_res=eval_res, step=step))
+        
+    def send_real_length_message(self, real_world_distance: float, name: str):
+        """Send real length message
+
+        Args:
+           real_world_distance: World length.
+        """
+        self._queue(messages.ReaLengthMessage(real_world_distance=real_world_distance, name = name))
 
     def _add_gui_impl(
         self,

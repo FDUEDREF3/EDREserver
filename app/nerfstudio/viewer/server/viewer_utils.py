@@ -164,6 +164,8 @@ def apply_colormap(
     """
     colormap_type = control_panel.colormap
     output_type = control_panel.output_render
+    # print(output_type)
+    # output_type = "depth"
 
     # default for rgb images
     if colormap_type == ColormapTypes.DEFAULT and outputs[output_type].shape[-1] == 3:
@@ -172,13 +174,22 @@ def apply_colormap(
     # rendering depth outputs
     if outputs[output_type].shape[-1] == 1 and outputs[output_type].dtype == torch.float:
         output = outputs[output_type]
-        if control_panel.colormap_normalize:
-            output = output - torch.min(output)
-            output = output / (torch.max(output) + eps)
-        output = output * (control_panel.colormap_max - control_panel.colormap_min) + control_panel.colormap_min
-        output = torch.clip(output, 0, 1)
-        if control_panel.colormap_invert:
-            output = 1 - output
+        
+        # if control_panel.colormap_normalize:
+        #     output = output - torch.min(output)
+        #     output = output / (torch.max(output) + eps)
+        # output = output * (control_panel.colormap_max - control_panel.colormap_min) + control_panel.colormap_min
+        # output = torch.clip(output, 0, 1) #原始
+        
+        # output = output - torch.min(output)
+        output = output / (torch.max(output) + eps)
+        # output = output / torch.max(output)
+        print(output.shape)
+        print(output*255)
+        output = 1 - output
+        # print(output)
+        # if control_panel.colormap_invert:
+        #     output = 1 - output
         if colormap_type == ColormapTypes.DEFAULT:
             return colormaps.apply_colormap(output, cmap=ColormapTypes.TURBO.value)
         return colormaps.apply_colormap(output, cmap=colormap_type)

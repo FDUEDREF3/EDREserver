@@ -46,7 +46,7 @@ import yaml
 from rich.console import Console
 
 import sys
-sys.path.append("/home/dcy/code/EDREserver/app")
+sys.path.append("/home/dcy/code/EDREserver/")
 from app.nerfstudio.configs.config_utils import convert_markup_to_ansi
 from app.nerfstudio.configs.method_configs import AnnotatedBaseConfigUnion
 from app.nerfstudio.engine.trainer import TrainerConfig
