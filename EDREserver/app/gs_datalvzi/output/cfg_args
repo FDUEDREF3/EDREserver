@@ -1,0 +1,1 @@
+Namespace(sh_degree=3, source_path='/home/dcy/code/EDREserver/EDREserver/app/gs_data/lvzi/dense', model_path='./EDREserver/app/gs_datalvzi/output', images='images', resolution=-1, white_background=False, data_device='cuda', eval=False)

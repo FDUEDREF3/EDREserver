@@ -17,7 +17,7 @@ class ProjectList(db.Model):
     state = db.Column(db.Integer)   # 0，1，2分别代表colmap中，训练中，训练结束
     configPath = db.Column(db.String)
     colmapPath = db.Column(db.Text)
-    method = db.Column(db.Integer)  #0,1分别代表使用nerfstudio和nerf2mesh
+    method = db.Column(db.Integer)  #0,1,2分别代表使用nerfstudio,nerf2mesh和gussian_splatting
     
 
     # repr()方法显示一个可读字符串

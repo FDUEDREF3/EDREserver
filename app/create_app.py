@@ -1,6 +1,7 @@
 from flask import Flask  # 从flask包里面导入Flask核心类
 from app.api.views import api
 from app.api.n2m_views import n2m_api
+from app.api.gs_views import gs_api
 from app.config.settings import DBConfig
 from flask_sqlalchemy import SQLAlchemy
 from app import db
@@ -12,6 +13,8 @@ from geventwebsocket.handler import WebSocketHandler
 def register_blueprint(app):
     app.register_blueprint(api, url_prefix='/api')
     app.register_blueprint(n2m_api, url_prefix='/nerf2mesh')
+    app.register_blueprint(gs_api, url_prefix='/gs')
+    
 
 def connectDB(app, dbConfig):
     app.config[

@@ -5,7 +5,9 @@ __pycache__/
 .idea/
 .vscode/
 app/data/
+app/n2m_data
+app/gs_data
 =0.5.6
 EDREserver.code-workspace
 .DS_Store
-app/n2m_data
+
